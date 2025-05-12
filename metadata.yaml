@@ -1,8 +1,8 @@
 service:
-  full_name:
-  short_name:
-  link:
-  documentation:
+  full_name: Amazon Bedrock
+  short_name: Bedrock
+  link: https://aws.amazon.com/bedrock/
+  documentation: https://docs.aws.amazon.com/bedrock/
 api_versions:
   - api_version: v1alpha1
     status: available
