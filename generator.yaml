@@ -1,0 +1,12 @@
+ignore:
+  resource_names:
+      - Agent
+      - AgentActionGroup
+      - AgentAlias
+      - DataSource
+      - Flow
+      - FlowAlias
+      - FlowVersion
+      - KnowledgeBase
+      - Prompt
+      - PromptVersion
