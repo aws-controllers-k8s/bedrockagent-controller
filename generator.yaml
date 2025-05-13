@@ -2,7 +2,7 @@ sdk_names:
   model_name: bedrock-agent
 ignore:
   resource_names:
-      - Agent
+      #- Agent
       - AgentActionGroup
       - AgentAlias
       - DataSource

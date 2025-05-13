@@ -39,6 +39,8 @@ import (
 	svctypes "github.com/aws-controllers-k8s/bedrockagent-controller/apis/v1alpha1"
 	svcresource "github.com/aws-controllers-k8s/bedrockagent-controller/pkg/resource"
 
+	_ "github.com/aws-controllers-k8s/bedrockagent-controller/pkg/resource/agent"
+
 	"github.com/aws-controllers-k8s/bedrockagent-controller/pkg/version"
 )
 
