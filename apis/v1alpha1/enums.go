@@ -32,11 +32,20 @@ const (
 type AgentAliasStatus string
 
 const (
-	AgentAliasStatus_CREATING AgentAliasStatus = "CREATING"
-	AgentAliasStatus_DELETING AgentAliasStatus = "DELETING"
-	AgentAliasStatus_FAILED   AgentAliasStatus = "FAILED"
-	AgentAliasStatus_PREPARED AgentAliasStatus = "PREPARED"
-	AgentAliasStatus_UPDATING AgentAliasStatus = "UPDATING"
+	AgentAliasStatus_CREATING    AgentAliasStatus = "CREATING"
+	AgentAliasStatus_DELETING    AgentAliasStatus = "DELETING"
+	AgentAliasStatus_DISSOCIATED AgentAliasStatus = "DISSOCIATED"
+	AgentAliasStatus_FAILED      AgentAliasStatus = "FAILED"
+	AgentAliasStatus_PREPARED    AgentAliasStatus = "PREPARED"
+	AgentAliasStatus_UPDATING    AgentAliasStatus = "UPDATING"
+)
+
+type AgentCollaboration string
+
+const (
+	AgentCollaboration_DISABLED          AgentCollaboration = "DISABLED"
+	AgentCollaboration_SUPERVISOR        AgentCollaboration = "SUPERVISOR"
+	AgentCollaboration_SUPERVISOR_ROUTER AgentCollaboration = "SUPERVISOR_ROUTER"
 )
 
 type AgentStatus_SDK string
@@ -50,6 +59,12 @@ const (
 	AgentStatus_SDK_PREPARING    AgentStatus_SDK = "PREPARING"
 	AgentStatus_SDK_UPDATING     AgentStatus_SDK = "UPDATING"
 	AgentStatus_SDK_VERSIONING   AgentStatus_SDK = "VERSIONING"
+)
+
+type CachePointType string
+
+const (
+	CachePointType_default CachePointType = "default"
 )
 
 type ChunkingStrategy string
@@ -132,12 +147,13 @@ const (
 type DataSourceType string
 
 const (
-	DataSourceType_CONFLUENCE DataSourceType = "CONFLUENCE"
-	DataSourceType_CUSTOM     DataSourceType = "CUSTOM"
-	DataSourceType_S3         DataSourceType = "S3"
-	DataSourceType_SALESFORCE DataSourceType = "SALESFORCE"
-	DataSourceType_SHAREPOINT DataSourceType = "SHAREPOINT"
-	DataSourceType_WEB        DataSourceType = "WEB"
+	DataSourceType_CONFLUENCE        DataSourceType = "CONFLUENCE"
+	DataSourceType_CUSTOM            DataSourceType = "CUSTOM"
+	DataSourceType_REDSHIFT_METADATA DataSourceType = "REDSHIFT_METADATA"
+	DataSourceType_S3                DataSourceType = "S3"
+	DataSourceType_SALESFORCE        DataSourceType = "SALESFORCE"
+	DataSourceType_SHAREPOINT        DataSourceType = "SHAREPOINT"
+	DataSourceType_WEB               DataSourceType = "WEB"
 )
 
 type DocumentStatus string
@@ -239,9 +255,18 @@ const (
 	FlowValidationType_UnknownConnectionSourceOutput   FlowValidationType = "UnknownConnectionSourceOutput"
 	FlowValidationType_UnknownConnectionTarget         FlowValidationType = "UnknownConnectionTarget"
 	FlowValidationType_UnknownConnectionTargetInput    FlowValidationType = "UnknownConnectionTargetInput"
+	FlowValidationType_UnknownNodeInput                FlowValidationType = "UnknownNodeInput"
+	FlowValidationType_UnknownNodeOutput               FlowValidationType = "UnknownNodeOutput"
 	FlowValidationType_UnreachableNode                 FlowValidationType = "UnreachableNode"
 	FlowValidationType_UnsatisfiedConnectionConditions FlowValidationType = "UnsatisfiedConnectionConditions"
 	FlowValidationType_Unspecified                     FlowValidationType = "Unspecified"
+)
+
+type IncludeExclude string
+
+const (
+	IncludeExclude_EXCLUDE IncludeExclude = "EXCLUDE"
+	IncludeExclude_INCLUDE IncludeExclude = "INCLUDE"
 )
 
 type IngestionJobFilterAttribute string
@@ -312,6 +337,8 @@ const (
 type KnowledgeBaseType string
 
 const (
+	KnowledgeBaseType_KENDRA KnowledgeBaseType = "KENDRA"
+	KnowledgeBaseType_SQL    KnowledgeBaseType = "SQL"
 	KnowledgeBaseType_VECTOR KnowledgeBaseType = "VECTOR"
 )
 
@@ -344,9 +371,16 @@ const (
 	OrchestrationType_DEFAULT              OrchestrationType = "DEFAULT"
 )
 
+type ParsingModality string
+
+const (
+	ParsingModality_MULTIMODAL ParsingModality = "MULTIMODAL"
+)
+
 type ParsingStrategy string
 
 const (
+	ParsingStrategy_BEDROCK_DATA_AUTOMATION  ParsingStrategy = "BEDROCK_DATA_AUTOMATION"
 	ParsingStrategy_BEDROCK_FOUNDATION_MODEL ParsingStrategy = "BEDROCK_FOUNDATION_MODEL"
 )
 
@@ -368,9 +402,52 @@ type PromptType string
 
 const (
 	PromptType_KNOWLEDGE_BASE_RESPONSE_GENERATION PromptType = "KNOWLEDGE_BASE_RESPONSE_GENERATION"
+	PromptType_MEMORY_SUMMARIZATION               PromptType = "MEMORY_SUMMARIZATION"
 	PromptType_ORCHESTRATION                      PromptType = "ORCHESTRATION"
 	PromptType_POST_PROCESSING                    PromptType = "POST_PROCESSING"
 	PromptType_PRE_PROCESSING                     PromptType = "PRE_PROCESSING"
+)
+
+type QueryEngineType string
+
+const (
+	QueryEngineType_REDSHIFT QueryEngineType = "REDSHIFT"
+)
+
+type RedshiftProvisionedAuthType string
+
+const (
+	RedshiftProvisionedAuthType_IAM               RedshiftProvisionedAuthType = "IAM"
+	RedshiftProvisionedAuthType_USERNAME          RedshiftProvisionedAuthType = "USERNAME"
+	RedshiftProvisionedAuthType_USERNAME_PASSWORD RedshiftProvisionedAuthType = "USERNAME_PASSWORD"
+)
+
+type RedshiftQueryEngineStorageType string
+
+const (
+	RedshiftQueryEngineStorageType_AWS_DATA_CATALOG RedshiftQueryEngineStorageType = "AWS_DATA_CATALOG"
+	RedshiftQueryEngineStorageType_REDSHIFT         RedshiftQueryEngineStorageType = "REDSHIFT"
+)
+
+type RedshiftQueryEngineType string
+
+const (
+	RedshiftQueryEngineType_PROVISIONED RedshiftQueryEngineType = "PROVISIONED"
+	RedshiftQueryEngineType_SERVERLESS  RedshiftQueryEngineType = "SERVERLESS"
+)
+
+type RedshiftServerlessAuthType string
+
+const (
+	RedshiftServerlessAuthType_IAM               RedshiftServerlessAuthType = "IAM"
+	RedshiftServerlessAuthType_USERNAME_PASSWORD RedshiftServerlessAuthType = "USERNAME_PASSWORD"
+)
+
+type RelayConversationHistory string
+
+const (
+	RelayConversationHistory_DISABLED        RelayConversationHistory = "DISABLED"
+	RelayConversationHistory_TO_COLLABORATOR RelayConversationHistory = "TO_COLLABORATOR"
 )
 
 type RequireConfirmation string
@@ -389,7 +466,8 @@ const (
 type SharePointAuthType string
 
 const (
-	SharePointAuthType_OAUTH2_CLIENT_CREDENTIALS SharePointAuthType = "OAUTH2_CLIENT_CREDENTIALS"
+	SharePointAuthType_OAUTH2_CLIENT_CREDENTIALS                     SharePointAuthType = "OAUTH2_CLIENT_CREDENTIALS"
+	SharePointAuthType_OAUTH2_SHAREPOINT_APP_ONLY_CLIENT_CREDENTIALS SharePointAuthType = "OAUTH2_SHAREPOINT_APP_ONLY_CLIENT_CREDENTIALS"
 )
 
 type SharePointHostType string
@@ -409,6 +487,12 @@ type StepType string
 
 const (
 	StepType_POST_CHUNKING StepType = "POST_CHUNKING"
+)
+
+type SupplementalDataStorageLocationType string
+
+const (
+	SupplementalDataStorageLocationType_S3 SupplementalDataStorageLocationType = "S3"
 )
 
 type Type string

@@ -12,3 +12,7 @@ ignore:
       - KnowledgeBase
       - Prompt
       - PromptVersion
+  field_paths:
+    - "PromptOverrideConfiguration.PromptConfigurations.PromptConfiguration.AdditionalModelRequestFields"
+
+

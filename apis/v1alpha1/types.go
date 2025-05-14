@@ -85,6 +85,27 @@ type AgentAliasSummary struct {
 	UpdatedAt      *metav1.Time `json:"updatedAt,omitempty"`
 }
 
+// An agent collaborator.
+type AgentCollaborator struct {
+	AgentID          *string      `json:"agentID,omitempty"`
+	AgentVersion     *string      `json:"agentVersion,omitempty"`
+	ClientToken      *string      `json:"clientToken,omitempty"`
+	CollaboratorID   *string      `json:"collaboratorID,omitempty"`
+	CollaboratorName *string      `json:"collaboratorName,omitempty"`
+	CreatedAt        *metav1.Time `json:"createdAt,omitempty"`
+	LastUpdatedAt    *metav1.Time `json:"lastUpdatedAt,omitempty"`
+}
+
+// An agent collaborator summary.
+type AgentCollaboratorSummary struct {
+	AgentID          *string      `json:"agentID,omitempty"`
+	AgentVersion     *string      `json:"agentVersion,omitempty"`
+	CollaboratorID   *string      `json:"collaboratorID,omitempty"`
+	CollaboratorName *string      `json:"collaboratorName,omitempty"`
+	CreatedAt        *metav1.Time `json:"createdAt,omitempty"`
+	LastUpdatedAt    *metav1.Time `json:"lastUpdatedAt,omitempty"`
+}
+
 // Contains details about a knowledge base that is associated with an agent.
 type AgentKnowledgeBase struct {
 	AgentID         *string      `json:"agentID,omitempty"`
@@ -117,6 +138,7 @@ type AgentSummary struct {
 // Contains details about a version of an agent.
 type AgentVersion struct {
 	AgentARN                 *string      `json:"agentARN,omitempty"`
+	AgentCollaboration       *string      `json:"agentCollaboration,omitempty"`
 	AgentID                  *string      `json:"agentID,omitempty"`
 	AgentName                *string      `json:"agentName,omitempty"`
 	AgentResourceRoleARN     *string      `json:"agentResourceRoleARN,omitempty"`
@@ -154,6 +176,7 @@ type AgentVersionSummary struct {
 // Contains details about an agent.
 type Agent_SDK struct {
 	AgentARN             *string      `json:"agentARN,omitempty"`
+	AgentCollaboration   *string      `json:"agentCollaboration,omitempty"`
 	AgentID              *string      `json:"agentID,omitempty"`
 	AgentName            *string      `json:"agentName,omitempty"`
 	AgentResourceRoleARN *string      `json:"agentResourceRoleARN,omitempty"`
@@ -372,7 +395,9 @@ type LambdaFunctionFlowNodeConfiguration struct {
 // Details of the memory configuration.
 type MemoryConfiguration struct {
 	EnabledMemoryTypes []*string `json:"enabledMemoryTypes,omitempty"`
-	StorageDays        *int64    `json:"storageDays,omitempty"`
+	// Configuration for SESSION_SUMMARY memory type enabled for the agent.
+	SessionSummaryConfiguration *SessionSummaryConfiguration `json:"sessionSummaryConfiguration,omitempty"`
+	StorageDays                 *int64                       `json:"storageDays,omitempty"`
 }
 
 // Contains the value of the metadata attribute. Choose a type and include the
@@ -408,6 +433,7 @@ type ParameterDetail struct {
 // sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
 type PromptConfiguration struct {
 	BasePromptTemplate *string `json:"basePromptTemplate,omitempty"`
+	FoundationModel    *string `json:"foundationModel,omitempty"`
 	// Contains inference parameters to use when the agent invokes a foundation
 	// model in the part of the agent sequence defined by the promptType. For more
 	// information, see Inference parameters for foundation models (https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
@@ -456,9 +482,22 @@ type PromptSummary struct {
 	Version   *string      `json:"version,omitempty"`
 }
 
+// Contains configurations for authentication to an Amazon Redshift provisioned
+// data warehouse. Specify the type of authentication to use in the type field
+// and include the corresponding field. If you specify IAM authentication, you
+// don't need to include another field.
+type RedshiftProvisionedAuthConfiguration struct {
+	DatabaseUser *string `json:"databaseUser,omitempty"`
+}
+
 // Contains the configuration for server-side encryption.
 type ServerSideEncryptionConfiguration struct {
 	KMSKeyARN *string `json:"kmsKeyARN,omitempty"`
+}
+
+// Configuration for SESSION_SUMMARY memory type enabled for the agent.
+type SessionSummaryConfiguration struct {
+	MaxRecentSessions *int64 `json:"maxRecentSessions,omitempty"`
 }
 
 // A Lambda function that processes documents.

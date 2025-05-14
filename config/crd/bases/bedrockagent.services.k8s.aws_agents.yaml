@@ -42,6 +42,9 @@ spec:
 
               Contains details about an agent.
             properties:
+              agentCollaboration:
+                description: The agent's collaboration role.
+                type: string
               agentName:
                 description: A name for the agent that you create.
                 type: string
@@ -142,6 +145,14 @@ spec:
                     items:
                       type: string
                     type: array
+                  sessionSummaryConfiguration:
+                    description: Configuration for SESSION_SUMMARY memory type enabled
+                      for the agent.
+                    properties:
+                      maxRecentSessions:
+                        format: int64
+                        type: integer
+                    type: object
                   storageDays:
                     format: int64
                     type: integer
@@ -165,6 +176,8 @@ spec:
                         sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
                       properties:
                         basePromptTemplate:
+                          type: string
+                        foundationModel:
                           type: string
                         inferenceConfiguration:
                           description: |-

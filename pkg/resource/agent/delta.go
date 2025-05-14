@@ -43,6 +43,13 @@ func newResourceDelta(
 		return delta
 	}
 
+	if ackcompare.HasNilDifference(a.ko.Spec.AgentCollaboration, b.ko.Spec.AgentCollaboration) {
+		delta.Add("Spec.AgentCollaboration", a.ko.Spec.AgentCollaboration, b.ko.Spec.AgentCollaboration)
+	} else if a.ko.Spec.AgentCollaboration != nil && b.ko.Spec.AgentCollaboration != nil {
+		if *a.ko.Spec.AgentCollaboration != *b.ko.Spec.AgentCollaboration {
+			delta.Add("Spec.AgentCollaboration", a.ko.Spec.AgentCollaboration, b.ko.Spec.AgentCollaboration)
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.AgentName, b.ko.Spec.AgentName) {
 		delta.Add("Spec.AgentName", a.ko.Spec.AgentName, b.ko.Spec.AgentName)
 	} else if a.ko.Spec.AgentName != nil && b.ko.Spec.AgentName != nil {
@@ -140,6 +147,17 @@ func newResourceDelta(
 		} else if len(a.ko.Spec.MemoryConfiguration.EnabledMemoryTypes) > 0 {
 			if !ackcompare.SliceStringPEqual(a.ko.Spec.MemoryConfiguration.EnabledMemoryTypes, b.ko.Spec.MemoryConfiguration.EnabledMemoryTypes) {
 				delta.Add("Spec.MemoryConfiguration.EnabledMemoryTypes", a.ko.Spec.MemoryConfiguration.EnabledMemoryTypes, b.ko.Spec.MemoryConfiguration.EnabledMemoryTypes)
+			}
+		}
+		if ackcompare.HasNilDifference(a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration, b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration) {
+			delta.Add("Spec.MemoryConfiguration.SessionSummaryConfiguration", a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration, b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration)
+		} else if a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration != nil && b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration != nil {
+			if ackcompare.HasNilDifference(a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions, b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions) {
+				delta.Add("Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions", a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions, b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions)
+			} else if a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions != nil && b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions != nil {
+				if *a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions != *b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions {
+					delta.Add("Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions", a.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions, b.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions)
+				}
 			}
 		}
 		if ackcompare.HasNilDifference(a.ko.Spec.MemoryConfiguration.StorageDays, b.ko.Spec.MemoryConfiguration.StorageDays) {

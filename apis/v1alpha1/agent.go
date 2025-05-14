@@ -25,6 +25,8 @@ import (
 // Contains details about an agent.
 type AgentSpec struct {
 
+	// The agent's collaboration role.
+	AgentCollaboration *string `json:"agentCollaboration,omitempty"`
 	// A name for the agent that you create.
 	// +kubebuilder:validation:Required
 	AgentName *string `json:"agentName"`
