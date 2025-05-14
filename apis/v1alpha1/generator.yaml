@@ -13,6 +13,7 @@ ignore:
       - Prompt
       - PromptVersion
   field_paths:
+    # Uses unhandled type 'smithy.api#document'
     - "PromptOverrideConfiguration.PromptConfigurations.PromptConfiguration.AdditionalModelRequestFields"
 
 

@@ -217,8 +217,10 @@ func (rm *resourceManager) sdkFind(
 			}
 			f17.SessionSummaryConfiguration = f17f1
 		}
-		storageDaysCopy := int64(resp.Agent.MemoryConfiguration.StorageDays)
-		f17.StorageDays = &storageDaysCopy
+		if resp.Agent.MemoryConfiguration.StorageDays != nil {
+			storageDaysCopy := int64(*resp.Agent.MemoryConfiguration.StorageDays)
+			f17.StorageDays = &storageDaysCopy
+		}
 		ko.Spec.MemoryConfiguration = f17
 	} else {
 		ko.Spec.MemoryConfiguration = nil
@@ -484,8 +486,10 @@ func (rm *resourceManager) sdkCreate(
 			}
 			f17.SessionSummaryConfiguration = f17f1
 		}
-		storageDaysCopy := int64(resp.Agent.MemoryConfiguration.StorageDays)
-		f17.StorageDays = &storageDaysCopy
+		if resp.Agent.MemoryConfiguration.StorageDays != nil {
+			storageDaysCopy := int64(*resp.Agent.MemoryConfiguration.StorageDays)
+			f17.StorageDays = &storageDaysCopy
+		}
 		ko.Spec.MemoryConfiguration = f17
 	} else {
 		ko.Spec.MemoryConfiguration = nil
@@ -631,7 +635,7 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy
@@ -668,7 +672,7 @@ func (rm *resourceManager) newCreateRequestPayload(
 				return nil, fmt.Errorf("error: field storageDays is of type int32")
 			}
 			storageDaysCopy := int32(storageDaysCopy0)
-			f11.StorageDays = storageDaysCopy
+			f11.StorageDays = &storageDaysCopy
 		}
 		res.MemoryConfiguration = f11
 	}
@@ -909,8 +913,10 @@ func (rm *resourceManager) sdkUpdate(
 			}
 			f17.SessionSummaryConfiguration = f17f1
 		}
-		storageDaysCopy := int64(resp.Agent.MemoryConfiguration.StorageDays)
-		f17.StorageDays = &storageDaysCopy
+		if resp.Agent.MemoryConfiguration.StorageDays != nil {
+			storageDaysCopy := int64(*resp.Agent.MemoryConfiguration.StorageDays)
+			f17.StorageDays = &storageDaysCopy
+		}
 		ko.Spec.MemoryConfiguration = f17
 	} else {
 		ko.Spec.MemoryConfiguration = nil
@@ -1094,7 +1100,7 @@ func (rm *resourceManager) newUpdateRequestPayload(
 				return nil, fmt.Errorf("error: field storageDays is of type int32")
 			}
 			storageDaysCopy := int32(storageDaysCopy0)
-			f11.StorageDays = storageDaysCopy
+			f11.StorageDays = &storageDaysCopy
 		}
 		res.MemoryConfiguration = f11
 	}
