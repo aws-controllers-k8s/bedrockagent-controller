@@ -64,13 +64,6 @@ func newResourceDelta(
 			delta.Add("Spec.AgentResourceRoleARN", a.ko.Spec.AgentResourceRoleARN, b.ko.Spec.AgentResourceRoleARN)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.ClientToken, b.ko.Spec.ClientToken) {
-		delta.Add("Spec.ClientToken", a.ko.Spec.ClientToken, b.ko.Spec.ClientToken)
-	} else if a.ko.Spec.ClientToken != nil && b.ko.Spec.ClientToken != nil {
-		if *a.ko.Spec.ClientToken != *b.ko.Spec.ClientToken {
-			delta.Add("Spec.ClientToken", a.ko.Spec.ClientToken, b.ko.Spec.ClientToken)
-		}
-	}
 	if ackcompare.HasNilDifference(a.ko.Spec.CustomOrchestration, b.ko.Spec.CustomOrchestration) {
 		delta.Add("Spec.CustomOrchestration", a.ko.Spec.CustomOrchestration, b.ko.Spec.CustomOrchestration)
 	} else if a.ko.Spec.CustomOrchestration != nil && b.ko.Spec.CustomOrchestration != nil {
@@ -173,24 +166,6 @@ func newResourceDelta(
 	} else if a.ko.Spec.OrchestrationType != nil && b.ko.Spec.OrchestrationType != nil {
 		if *a.ko.Spec.OrchestrationType != *b.ko.Spec.OrchestrationType {
 			delta.Add("Spec.OrchestrationType", a.ko.Spec.OrchestrationType, b.ko.Spec.OrchestrationType)
-		}
-	}
-	if ackcompare.HasNilDifference(a.ko.Spec.PromptOverrideConfiguration, b.ko.Spec.PromptOverrideConfiguration) {
-		delta.Add("Spec.PromptOverrideConfiguration", a.ko.Spec.PromptOverrideConfiguration, b.ko.Spec.PromptOverrideConfiguration)
-	} else if a.ko.Spec.PromptOverrideConfiguration != nil && b.ko.Spec.PromptOverrideConfiguration != nil {
-		if ackcompare.HasNilDifference(a.ko.Spec.PromptOverrideConfiguration.OverrideLambda, b.ko.Spec.PromptOverrideConfiguration.OverrideLambda) {
-			delta.Add("Spec.PromptOverrideConfiguration.OverrideLambda", a.ko.Spec.PromptOverrideConfiguration.OverrideLambda, b.ko.Spec.PromptOverrideConfiguration.OverrideLambda)
-		} else if a.ko.Spec.PromptOverrideConfiguration.OverrideLambda != nil && b.ko.Spec.PromptOverrideConfiguration.OverrideLambda != nil {
-			if *a.ko.Spec.PromptOverrideConfiguration.OverrideLambda != *b.ko.Spec.PromptOverrideConfiguration.OverrideLambda {
-				delta.Add("Spec.PromptOverrideConfiguration.OverrideLambda", a.ko.Spec.PromptOverrideConfiguration.OverrideLambda, b.ko.Spec.PromptOverrideConfiguration.OverrideLambda)
-			}
-		}
-		if len(a.ko.Spec.PromptOverrideConfiguration.PromptConfigurations) != len(b.ko.Spec.PromptOverrideConfiguration.PromptConfigurations) {
-			delta.Add("Spec.PromptOverrideConfiguration.PromptConfigurations", a.ko.Spec.PromptOverrideConfiguration.PromptConfigurations, b.ko.Spec.PromptOverrideConfiguration.PromptConfigurations)
-		} else if len(a.ko.Spec.PromptOverrideConfiguration.PromptConfigurations) > 0 {
-			if !reflect.DeepEqual(a.ko.Spec.PromptOverrideConfiguration.PromptConfigurations, b.ko.Spec.PromptOverrideConfiguration.PromptConfigurations) {
-				delta.Add("Spec.PromptOverrideConfiguration.PromptConfigurations", a.ko.Spec.PromptOverrideConfiguration.PromptConfigurations, b.ko.Spec.PromptOverrideConfiguration.PromptConfigurations)
-			}
 		}
 	}
 	desiredACKTags, _ := convertToOrderedACKTags(a.ko.Spec.Tags)

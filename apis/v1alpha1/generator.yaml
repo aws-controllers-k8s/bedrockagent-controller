@@ -15,5 +15,30 @@ ignore:
   field_paths:
     # Uses unhandled type 'smithy.api#document'
     - "PromptOverrideConfiguration.PromptConfigurations.PromptConfiguration.AdditionalModelRequestFields"
+    - CreateAgentInput.ClientToken
+
+resources:
+  Agent:
+    fields:
+      AgentResourceRoleARN:
+        # AgentResourceRoleARN is not marked as required in CreateAgent, but is required by UpdateAgent
+        is_required: true
+      PromptOverrideConfiguration:
+        compare:
+          is_ignored: true
+    synced:
+      when:
+        - path: Status.AgentStatus
+          in:
+            - PREPARED
+    terminal_codes:
+      - ValidationException
+      - ResourceNotFoundException
+
+    hooks:
+      sdk_create_post_set_output:
+        template_path: hooks/agent/sdk_create_post_set_output.go.tpl
+      sdk_update_post_set_output:
+        template_path: hooks/agent/sdk_update_post_set_output.go.tpl
 
 

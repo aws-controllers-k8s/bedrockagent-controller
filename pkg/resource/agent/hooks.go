@@ -1,0 +1,37 @@
+package agent
+
+import (
+	"context"
+
+	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
+	svcsdk "github.com/aws/aws-sdk-go-v2/service/bedrockagent"
+)
+
+type metricsRecorder interface {
+	RecordAPICall(opType string, opID string, err error)
+}
+
+type agentClient interface {
+	PrepareAgent(context.Context, *svcsdk.PrepareAgentInput, ...func(*svcsdk.Options)) (*svcsdk.PrepareAgentOutput, error)
+}
+
+func prepareAgent(
+	ctx context.Context,
+	client agentClient,
+	metrics metricsRecorder,
+	agentId string,
+) error {
+	var err error
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("hooks.prepareAgent")
+	defer func() {
+		exit(err)
+	}()
+
+	_, err = client.PrepareAgent(ctx, &svcsdk.PrepareAgentInput{
+		AgentId: &agentId,
+	})
+	metrics.RecordAPICall("UPDATE", "PREPARE_AGENT", err)
+
+	return nil
+}

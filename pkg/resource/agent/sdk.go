@@ -129,9 +129,9 @@ func (rm *resourceManager) sdkFind(
 		ko.Status.AgentVersion = nil
 	}
 	if resp.Agent.ClientToken != nil {
-		ko.Spec.ClientToken = resp.Agent.ClientToken
+		ko.Status.ClientToken = resp.Agent.ClientToken
 	} else {
-		ko.Spec.ClientToken = nil
+		ko.Status.ClientToken = nil
 	}
 	if resp.Agent.CreatedAt != nil {
 		ko.Status.CreatedAt = &metav1.Time{*resp.Agent.CreatedAt}
@@ -398,9 +398,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Status.AgentVersion = nil
 	}
 	if resp.Agent.ClientToken != nil {
-		ko.Spec.ClientToken = resp.Agent.ClientToken
+		ko.Status.ClientToken = resp.Agent.ClientToken
 	} else {
-		ko.Spec.ClientToken = nil
+		ko.Status.ClientToken = nil
 	}
 	if resp.Agent.CreatedAt != nil {
 		ko.Status.CreatedAt = &metav1.Time{*resp.Agent.CreatedAt}
@@ -574,6 +574,8 @@ func (rm *resourceManager) sdkCreate(
 	}
 
 	rm.setStatusDefaults(ko)
+	prepareAgent(ctx, rm.sdkapi, rm.metrics, *ko.Status.AgentID)
+
 	return &resource{ko}, nil
 }
 
@@ -594,24 +596,21 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.AgentResourceRoleARN != nil {
 		res.AgentResourceRoleArn = r.ko.Spec.AgentResourceRoleARN
 	}
-	if r.ko.Spec.ClientToken != nil {
-		res.ClientToken = r.ko.Spec.ClientToken
-	}
 	if r.ko.Spec.CustomOrchestration != nil {
-		f4 := &svcsdktypes.CustomOrchestration{}
+		f3 := &svcsdktypes.CustomOrchestration{}
 		if r.ko.Spec.CustomOrchestration.Executor != nil {
-			var f4f0 svcsdktypes.OrchestrationExecutor
+			var f3f0 svcsdktypes.OrchestrationExecutor
 			isInterfaceSet := false
 			if r.ko.Spec.CustomOrchestration.Executor.Lambda != nil {
 				if isInterfaceSet {
 					return nil, ackerr.NewTerminalError(fmt.Errorf("can only set one of the members for Lambda"))
 				}
-				f4f0f0Parent := &svcsdktypes.OrchestrationExecutorMemberLambda{}
-				f4f0f0Parent.Value = *r.ko.Spec.CustomOrchestration.Executor.Lambda
+				f3f0f0Parent := &svcsdktypes.OrchestrationExecutorMemberLambda{}
+				f3f0f0Parent.Value = *r.ko.Spec.CustomOrchestration.Executor.Lambda
 			}
-			f4.Executor = f4f0
+			f3.Executor = f3f0
 		}
-		res.CustomOrchestration = f4
+		res.CustomOrchestration = f3
 	}
 	if r.ko.Spec.CustomerEncryptionKeyARN != nil {
 		res.CustomerEncryptionKeyArn = r.ko.Spec.CustomerEncryptionKeyARN
@@ -623,19 +622,19 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.FoundationModel = r.ko.Spec.FoundationModel
 	}
 	if r.ko.Spec.GuardrailConfiguration != nil {
-		f8 := &svcsdktypes.GuardrailConfiguration{}
+		f7 := &svcsdktypes.GuardrailConfiguration{}
 		if r.ko.Spec.GuardrailConfiguration.GuardrailIdentifier != nil {
-			f8.GuardrailIdentifier = r.ko.Spec.GuardrailConfiguration.GuardrailIdentifier
+			f7.GuardrailIdentifier = r.ko.Spec.GuardrailConfiguration.GuardrailIdentifier
 		}
 		if r.ko.Spec.GuardrailConfiguration.GuardrailVersion != nil {
-			f8.GuardrailVersion = r.ko.Spec.GuardrailConfiguration.GuardrailVersion
+			f7.GuardrailVersion = r.ko.Spec.GuardrailConfiguration.GuardrailVersion
 		}
-		res.GuardrailConfiguration = f8
+		res.GuardrailConfiguration = f7
 	}
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy
@@ -644,27 +643,27 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.Instruction = r.ko.Spec.Instruction
 	}
 	if r.ko.Spec.MemoryConfiguration != nil {
-		f11 := &svcsdktypes.MemoryConfiguration{}
+		f10 := &svcsdktypes.MemoryConfiguration{}
 		if r.ko.Spec.MemoryConfiguration.EnabledMemoryTypes != nil {
-			f11f0 := []svcsdktypes.MemoryType{}
-			for _, f11f0iter := range r.ko.Spec.MemoryConfiguration.EnabledMemoryTypes {
-				var f11f0elem string
-				f11f0elem = string(*f11f0iter)
-				f11f0 = append(f11f0, svcsdktypes.MemoryType(f11f0elem))
+			f10f0 := []svcsdktypes.MemoryType{}
+			for _, f10f0iter := range r.ko.Spec.MemoryConfiguration.EnabledMemoryTypes {
+				var f10f0elem string
+				f10f0elem = string(*f10f0iter)
+				f10f0 = append(f10f0, svcsdktypes.MemoryType(f10f0elem))
 			}
-			f11.EnabledMemoryTypes = f11f0
+			f10.EnabledMemoryTypes = f10f0
 		}
 		if r.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration != nil {
-			f11f1 := &svcsdktypes.SessionSummaryConfiguration{}
+			f10f1 := &svcsdktypes.SessionSummaryConfiguration{}
 			if r.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions != nil {
 				maxRecentSessionsCopy0 := *r.ko.Spec.MemoryConfiguration.SessionSummaryConfiguration.MaxRecentSessions
 				if maxRecentSessionsCopy0 > math.MaxInt32 || maxRecentSessionsCopy0 < math.MinInt32 {
 					return nil, fmt.Errorf("error: field maxRecentSessions is of type int32")
 				}
 				maxRecentSessionsCopy := int32(maxRecentSessionsCopy0)
-				f11f1.MaxRecentSessions = &maxRecentSessionsCopy
+				f10f1.MaxRecentSessions = &maxRecentSessionsCopy
 			}
-			f11.SessionSummaryConfiguration = f11f1
+			f10.SessionSummaryConfiguration = f10f1
 		}
 		if r.ko.Spec.MemoryConfiguration.StorageDays != nil {
 			storageDaysCopy0 := *r.ko.Spec.MemoryConfiguration.StorageDays
@@ -672,84 +671,84 @@ func (rm *resourceManager) newCreateRequestPayload(
 				return nil, fmt.Errorf("error: field storageDays is of type int32")
 			}
 			storageDaysCopy := int32(storageDaysCopy0)
-			f11.StorageDays = &storageDaysCopy
+			f10.StorageDays = &storageDaysCopy
 		}
-		res.MemoryConfiguration = f11
+		res.MemoryConfiguration = f10
 	}
 	if r.ko.Spec.OrchestrationType != nil {
 		res.OrchestrationType = svcsdktypes.OrchestrationType(*r.ko.Spec.OrchestrationType)
 	}
 	if r.ko.Spec.PromptOverrideConfiguration != nil {
-		f13 := &svcsdktypes.PromptOverrideConfiguration{}
+		f12 := &svcsdktypes.PromptOverrideConfiguration{}
 		if r.ko.Spec.PromptOverrideConfiguration.OverrideLambda != nil {
-			f13.OverrideLambda = r.ko.Spec.PromptOverrideConfiguration.OverrideLambda
+			f12.OverrideLambda = r.ko.Spec.PromptOverrideConfiguration.OverrideLambda
 		}
 		if r.ko.Spec.PromptOverrideConfiguration.PromptConfigurations != nil {
-			f13f1 := []svcsdktypes.PromptConfiguration{}
-			for _, f13f1iter := range r.ko.Spec.PromptOverrideConfiguration.PromptConfigurations {
-				f13f1elem := &svcsdktypes.PromptConfiguration{}
-				if f13f1iter.BasePromptTemplate != nil {
-					f13f1elem.BasePromptTemplate = f13f1iter.BasePromptTemplate
+			f12f1 := []svcsdktypes.PromptConfiguration{}
+			for _, f12f1iter := range r.ko.Spec.PromptOverrideConfiguration.PromptConfigurations {
+				f12f1elem := &svcsdktypes.PromptConfiguration{}
+				if f12f1iter.BasePromptTemplate != nil {
+					f12f1elem.BasePromptTemplate = f12f1iter.BasePromptTemplate
 				}
-				if f13f1iter.FoundationModel != nil {
-					f13f1elem.FoundationModel = f13f1iter.FoundationModel
+				if f12f1iter.FoundationModel != nil {
+					f12f1elem.FoundationModel = f12f1iter.FoundationModel
 				}
-				if f13f1iter.InferenceConfiguration != nil {
-					f13f1elemf2 := &svcsdktypes.InferenceConfiguration{}
-					if f13f1iter.InferenceConfiguration.MaximumLength != nil {
-						maximumLengthCopy0 := *f13f1iter.InferenceConfiguration.MaximumLength
+				if f12f1iter.InferenceConfiguration != nil {
+					f12f1elemf2 := &svcsdktypes.InferenceConfiguration{}
+					if f12f1iter.InferenceConfiguration.MaximumLength != nil {
+						maximumLengthCopy0 := *f12f1iter.InferenceConfiguration.MaximumLength
 						if maximumLengthCopy0 > math.MaxInt32 || maximumLengthCopy0 < math.MinInt32 {
 							return nil, fmt.Errorf("error: field maximumLength is of type int32")
 						}
 						maximumLengthCopy := int32(maximumLengthCopy0)
-						f13f1elemf2.MaximumLength = &maximumLengthCopy
+						f12f1elemf2.MaximumLength = &maximumLengthCopy
 					}
-					if f13f1iter.InferenceConfiguration.StopSequences != nil {
-						f13f1elemf2.StopSequences = aws.ToStringSlice(f13f1iter.InferenceConfiguration.StopSequences)
+					if f12f1iter.InferenceConfiguration.StopSequences != nil {
+						f12f1elemf2.StopSequences = aws.ToStringSlice(f12f1iter.InferenceConfiguration.StopSequences)
 					}
-					if f13f1iter.InferenceConfiguration.Temperature != nil {
-						temperatureCopy0 := *f13f1iter.InferenceConfiguration.Temperature
-						if temperatureCopy0 > math.MaxFloat32 || temperatureCopy0 < math.SmallestNonzeroFloat32 {
+					if f12f1iter.InferenceConfiguration.Temperature != nil {
+						temperatureCopy0 := *f12f1iter.InferenceConfiguration.Temperature
+						if temperatureCopy0 > math.MaxFloat32 || temperatureCopy0 < -math.MaxFloat32 || (temperatureCopy0 < math.SmallestNonzeroFloat32 && !(temperatureCopy0 <= 0)) || (temperatureCopy0 > -math.SmallestNonzeroFloat32 && !(temperatureCopy0 >= 0)) {
 							return nil, fmt.Errorf("error: field temperature is of type float32")
 						}
 						temperatureCopy := float32(temperatureCopy0)
-						f13f1elemf2.Temperature = &temperatureCopy
+						f12f1elemf2.Temperature = &temperatureCopy
 					}
-					if f13f1iter.InferenceConfiguration.TopK != nil {
-						topKCopy0 := *f13f1iter.InferenceConfiguration.TopK
+					if f12f1iter.InferenceConfiguration.TopK != nil {
+						topKCopy0 := *f12f1iter.InferenceConfiguration.TopK
 						if topKCopy0 > math.MaxInt32 || topKCopy0 < math.MinInt32 {
 							return nil, fmt.Errorf("error: field topK is of type int32")
 						}
 						topKCopy := int32(topKCopy0)
-						f13f1elemf2.TopK = &topKCopy
+						f12f1elemf2.TopK = &topKCopy
 					}
-					if f13f1iter.InferenceConfiguration.TopP != nil {
-						topPCopy0 := *f13f1iter.InferenceConfiguration.TopP
-						if topPCopy0 > math.MaxFloat32 || topPCopy0 < math.SmallestNonzeroFloat32 {
+					if f12f1iter.InferenceConfiguration.TopP != nil {
+						topPCopy0 := *f12f1iter.InferenceConfiguration.TopP
+						if topPCopy0 > math.MaxFloat32 || topPCopy0 < -math.MaxFloat32 || (topPCopy0 < math.SmallestNonzeroFloat32 && !(topPCopy0 <= 0)) || (topPCopy0 > -math.SmallestNonzeroFloat32 && !(topPCopy0 >= 0)) {
 							return nil, fmt.Errorf("error: field topP is of type float32")
 						}
 						topPCopy := float32(topPCopy0)
-						f13f1elemf2.TopP = &topPCopy
+						f12f1elemf2.TopP = &topPCopy
 					}
-					f13f1elem.InferenceConfiguration = f13f1elemf2
+					f12f1elem.InferenceConfiguration = f12f1elemf2
 				}
-				if f13f1iter.ParserMode != nil {
-					f13f1elem.ParserMode = svcsdktypes.CreationMode(*f13f1iter.ParserMode)
+				if f12f1iter.ParserMode != nil {
+					f12f1elem.ParserMode = svcsdktypes.CreationMode(*f12f1iter.ParserMode)
 				}
-				if f13f1iter.PromptCreationMode != nil {
-					f13f1elem.PromptCreationMode = svcsdktypes.CreationMode(*f13f1iter.PromptCreationMode)
+				if f12f1iter.PromptCreationMode != nil {
+					f12f1elem.PromptCreationMode = svcsdktypes.CreationMode(*f12f1iter.PromptCreationMode)
 				}
-				if f13f1iter.PromptState != nil {
-					f13f1elem.PromptState = svcsdktypes.PromptState(*f13f1iter.PromptState)
+				if f12f1iter.PromptState != nil {
+					f12f1elem.PromptState = svcsdktypes.PromptState(*f12f1iter.PromptState)
 				}
-				if f13f1iter.PromptType != nil {
-					f13f1elem.PromptType = svcsdktypes.PromptType(*f13f1iter.PromptType)
+				if f12f1iter.PromptType != nil {
+					f12f1elem.PromptType = svcsdktypes.PromptType(*f12f1iter.PromptType)
 				}
-				f13f1 = append(f13f1, *f13f1elem)
+				f12f1 = append(f12f1, *f12f1elem)
 			}
-			f13.PromptConfigurations = f13f1
+			f12.PromptConfigurations = f12f1
 		}
-		res.PromptOverrideConfiguration = f13
+		res.PromptOverrideConfiguration = f12
 	}
 	if r.ko.Spec.Tags != nil {
 		res.Tags = aws.ToStringMap(r.ko.Spec.Tags)
@@ -825,9 +824,9 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Status.AgentVersion = nil
 	}
 	if resp.Agent.ClientToken != nil {
-		ko.Spec.ClientToken = resp.Agent.ClientToken
+		ko.Status.ClientToken = resp.Agent.ClientToken
 	} else {
-		ko.Spec.ClientToken = nil
+		ko.Status.ClientToken = nil
 	}
 	if resp.Agent.CreatedAt != nil {
 		ko.Status.CreatedAt = &metav1.Time{*resp.Agent.CreatedAt}
@@ -1001,6 +1000,8 @@ func (rm *resourceManager) sdkUpdate(
 	}
 
 	rm.setStatusDefaults(ko)
+	prepareAgent(ctx, rm.sdkapi, rm.metrics, *ko.Status.AgentID)
+
 	return &resource{ko}, nil
 }
 
@@ -1137,7 +1138,7 @@ func (rm *resourceManager) newUpdateRequestPayload(
 					}
 					if f13f1iter.InferenceConfiguration.Temperature != nil {
 						temperatureCopy0 := *f13f1iter.InferenceConfiguration.Temperature
-						if temperatureCopy0 > math.MaxFloat32 || temperatureCopy0 < math.SmallestNonzeroFloat32 {
+						if temperatureCopy0 > math.MaxFloat32 || temperatureCopy0 < -math.MaxFloat32 || (temperatureCopy0 < math.SmallestNonzeroFloat32 && !(temperatureCopy0 <= 0)) || (temperatureCopy0 > -math.SmallestNonzeroFloat32 && !(temperatureCopy0 >= 0)) {
 							return nil, fmt.Errorf("error: field temperature is of type float32")
 						}
 						temperatureCopy := float32(temperatureCopy0)
@@ -1153,7 +1154,7 @@ func (rm *resourceManager) newUpdateRequestPayload(
 					}
 					if f13f1iter.InferenceConfiguration.TopP != nil {
 						topPCopy0 := *f13f1iter.InferenceConfiguration.TopP
-						if topPCopy0 > math.MaxFloat32 || topPCopy0 < math.SmallestNonzeroFloat32 {
+						if topPCopy0 > math.MaxFloat32 || topPCopy0 < -math.MaxFloat32 || (topPCopy0 < math.SmallestNonzeroFloat32 && !(topPCopy0 <= 0)) || (topPCopy0 > -math.SmallestNonzeroFloat32 && !(topPCopy0 >= 0)) {
 							return nil, fmt.Errorf("error: field topP is of type float32")
 						}
 						topPCopy := float32(topPCopy0)

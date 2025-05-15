@@ -32,12 +32,8 @@ type AgentSpec struct {
 	AgentName *string `json:"agentName"`
 	// The Amazon Resource Name (ARN) of the IAM role with permissions to invoke
 	// API operations on the agent.
-	AgentResourceRoleARN *string `json:"agentResourceRoleARN,omitempty"`
-	// A unique, case-sensitive identifier to ensure that the API request completes
-	// no more than one time. If this token matches a previous request, Amazon Bedrock
-	// ignores the request, but does not return an error. For more information,
-	// see Ensuring idempotency (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
-	ClientToken *string `json:"clientToken,omitempty"`
+	// +kubebuilder:validation:Required
+	AgentResourceRoleARN *string `json:"agentResourceRoleARN"`
 	// Contains details of the custom orchestration configured for the agent.
 	CustomOrchestration *CustomOrchestration `json:"customOrchestration,omitempty"`
 	// The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.
@@ -136,6 +132,12 @@ type AgentStatus struct {
 	// The version of the agent.
 	// +kubebuilder:validation:Optional
 	AgentVersion *string `json:"agentVersion,omitempty"`
+	// A unique, case-sensitive identifier to ensure that the API request completes
+	// no more than one time. If this token matches a previous request, Amazon Bedrock
+	// ignores the request, but does not return an error. For more information,
+	// see Ensuring idempotency (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
+	// +kubebuilder:validation:Optional
+	ClientToken *string `json:"clientToken,omitempty"`
 	// The time at which the agent was created.
 	// +kubebuilder:validation:Optional
 	CreatedAt *metav1.Time `json:"createdAt,omitempty"`

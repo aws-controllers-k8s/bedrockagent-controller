@@ -501,11 +501,6 @@ func (in *AgentSpec) DeepCopyInto(out *AgentSpec) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.ClientToken != nil {
-		in, out := &in.ClientToken, &out.ClientToken
-		*out = new(string)
-		**out = **in
-	}
 	if in.CustomOrchestration != nil {
 		in, out := &in.CustomOrchestration, &out.CustomOrchestration
 		*out = new(CustomOrchestration)
@@ -615,6 +610,11 @@ func (in *AgentStatus) DeepCopyInto(out *AgentStatus) {
 	}
 	if in.AgentVersion != nil {
 		in, out := &in.AgentVersion, &out.AgentVersion
+		*out = new(string)
+		**out = **in
+	}
+	if in.ClientToken != nil {
+		in, out := &in.ClientToken, &out.ClientToken
 		*out = new(string)
 		**out = **in
 	}
