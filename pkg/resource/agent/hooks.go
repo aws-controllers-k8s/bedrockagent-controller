@@ -3,8 +3,10 @@ package agent
 import (
 	"context"
 
+	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
 	svcsdk "github.com/aws/aws-sdk-go-v2/service/bedrockagent"
+	svcsdktypes "github.com/aws/aws-sdk-go-v2/service/bedrockagent/types"
 )
 
 type metricsRecorder interface {
@@ -34,4 +36,13 @@ func prepareAgent(
 	metrics.RecordAPICall("UPDATE", "PREPARE_AGENT", err)
 
 	return nil
+}
+
+func compareAgentStatus(
+	latestStatus *string,
+	delta *ackcompare.Delta,
+) {
+	if latestStatus != nil && *latestStatus != string(svcsdktypes.AgentAliasStatusPrepared) {
+		delta.Add("Spec.AgentStatus", latestStatus, string(svcsdktypes.AgentAliasStatusPrepared))
+	}
 }

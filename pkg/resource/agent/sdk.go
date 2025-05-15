@@ -574,6 +574,10 @@ func (rm *resourceManager) sdkCreate(
 	}
 
 	rm.setStatusDefaults(ko)
+	// Agent is created in NOT_PREPARED state which is not fully ready.
+	// To complete setup need to call PrepareAgent. Note this call may
+	// fail as Agent has been created recently. Will need to ensure that
+	// subsequent reconcile loops retry if Agent is not PREPARED.
 	prepareAgent(ctx, rm.sdkapi, rm.metrics, *ko.Status.AgentID)
 
 	return &resource{ko}, nil
@@ -634,7 +638,7 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy
@@ -770,6 +774,15 @@ func (rm *resourceManager) sdkUpdate(
 	defer func() {
 		exit(err)
 	}()
+	// If AgentStatus is not in PREPARED state we need to call PrepareAgent to finalize setup
+	// of Agent. Uses hack (see delta.go) to trigger update from non-existent Spec.AgentStatus
+	if delta.DifferentAt("Spec.AgentStatus") {
+		prepareAgent(ctx, rm.sdkapi, rm.metrics, *desired.ko.Status.AgentID)
+	}
+
+	if !delta.DifferentExcept("Spec.AgentStatus") {
+		return desired, nil
+	}
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
 		return nil, err
@@ -1000,8 +1013,6 @@ func (rm *resourceManager) sdkUpdate(
 	}
 
 	rm.setStatusDefaults(ko)
-	prepareAgent(ctx, rm.sdkapi, rm.metrics, *ko.Status.AgentID)
-
 	return &resource{ko}, nil
 }
 
@@ -1318,6 +1329,19 @@ func (rm *resourceManager) updateConditions(
 // and if the exception indicates that it is a Terminal exception
 // 'Terminal' exception are specified in generator configuration
 func (rm *resourceManager) terminalAWSError(err error) bool {
-	// No terminal_errors specified for this resource in generator config
-	return false
+	if err == nil {
+		return false
+	}
+
+	var terminalErr smithy.APIError
+	if !errors.As(err, &terminalErr) {
+		return false
+	}
+	switch terminalErr.ErrorCode() {
+	case "ValidationException",
+		"ResourceNotFoundException":
+		return true
+	default:
+		return false
+	}
 }
