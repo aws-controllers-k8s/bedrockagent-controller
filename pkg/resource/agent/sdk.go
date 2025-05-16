@@ -305,6 +305,7 @@ func (rm *resourceManager) sdkFind(
 	}
 
 	rm.setStatusDefaults(ko)
+	ko.Spec.Tags, err = rm.getTags(ctx, string(*ko.Status.ACKResourceMetadata.ARN))
 	return &resource{ko}, nil
 }
 
@@ -780,9 +781,21 @@ func (rm *resourceManager) sdkUpdate(
 		prepareAgent(ctx, rm.sdkapi, rm.metrics, *desired.ko.Status.AgentID)
 	}
 
-	if !delta.DifferentExcept("Spec.AgentStatus") {
+	if delta.DifferentAt("Spec.Tags") {
+		err := rm.syncTags(
+			ctx,
+			desired,
+			latest,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if !delta.DifferentExcept("Spec.AgentStatus", "Spec.Tags") {
 		return desired, nil
 	}
+
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
 		return nil, err

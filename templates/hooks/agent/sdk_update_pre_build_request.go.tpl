@@ -4,6 +4,18 @@
 		prepareAgent(ctx, rm.sdkapi, rm.metrics, *desired.ko.Status.AgentID)
 	}
 
-	if !delta.DifferentExcept("Spec.AgentStatus") {
+	if delta.DifferentAt("Spec.Tags") {
+		err := rm.syncTags(
+			ctx,
+			desired,
+			latest,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if !delta.DifferentExcept("Spec.AgentStatus", "Spec.Tags") {
 		return desired, nil
 	}
+	

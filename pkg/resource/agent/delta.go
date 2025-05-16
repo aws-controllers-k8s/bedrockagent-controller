@@ -46,6 +46,8 @@ func newResourceDelta(
 	// if AgentStatus is not in PREPARED state.
 	compareAgentStatus(b.ko.Status.AgentStatus, delta)
 
+	comparePropertyOverrideConfiguration(a, b, delta)
+
 	if ackcompare.HasNilDifference(a.ko.Spec.AgentCollaboration, b.ko.Spec.AgentCollaboration) {
 		delta.Add("Spec.AgentCollaboration", a.ko.Spec.AgentCollaboration, b.ko.Spec.AgentCollaboration)
 	} else if a.ko.Spec.AgentCollaboration != nil && b.ko.Spec.AgentCollaboration != nil {

@@ -91,7 +91,8 @@ type AgentSpec struct {
 	// Contains configurations to override prompts in different parts of an agent
 	// sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
 	PromptOverrideConfiguration *PromptOverrideConfiguration `json:"promptOverrideConfiguration,omitempty"`
-	// Any tags that you want to attach to the agent.
+	// An object containing key-value pairs that define the tags to attach to the
+	// resource.
 	Tags map[string]*string `json:"tags,omitempty"`
 }
 

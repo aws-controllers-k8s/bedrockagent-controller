@@ -207,7 +207,9 @@ spec:
               tags:
                 additionalProperties:
                   type: string
-                description: Any tags that you want to attach to the agent.
+                description: |-
+                  An object containing key-value pairs that define the tags to attach to the
+                  resource.
                 type: object
             required:
             - agentName
