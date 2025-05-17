@@ -48,17 +48,17 @@ const (
 	AgentCollaboration_SUPERVISOR_ROUTER AgentCollaboration = "SUPERVISOR_ROUTER"
 )
 
-type AgentStatus string
+type AgentStatus_SDK string
 
 const (
-	AgentStatus_CREATING     AgentStatus = "CREATING"
-	AgentStatus_DELETING     AgentStatus = "DELETING"
-	AgentStatus_FAILED       AgentStatus = "FAILED"
-	AgentStatus_NOT_PREPARED AgentStatus = "NOT_PREPARED"
-	AgentStatus_PREPARED     AgentStatus = "PREPARED"
-	AgentStatus_PREPARING    AgentStatus = "PREPARING"
-	AgentStatus_UPDATING     AgentStatus = "UPDATING"
-	AgentStatus_VERSIONING   AgentStatus = "VERSIONING"
+	AgentStatus_SDK_CREATING     AgentStatus_SDK = "CREATING"
+	AgentStatus_SDK_DELETING     AgentStatus_SDK = "DELETING"
+	AgentStatus_SDK_FAILED       AgentStatus_SDK = "FAILED"
+	AgentStatus_SDK_NOT_PREPARED AgentStatus_SDK = "NOT_PREPARED"
+	AgentStatus_SDK_PREPARED     AgentStatus_SDK = "PREPARED"
+	AgentStatus_SDK_PREPARING    AgentStatus_SDK = "PREPARING"
+	AgentStatus_SDK_UPDATING     AgentStatus_SDK = "UPDATING"
+	AgentStatus_SDK_VERSIONING   AgentStatus_SDK = "VERSIONING"
 )
 
 type CachePointType string

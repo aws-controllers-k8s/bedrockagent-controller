@@ -27,3 +27,480 @@ var (
 	_ = &aws.JSONValue{}
 	_ = ackv1alpha1.AWSAccountID("")
 )
+
+// Contains details about the Lambda function containing the business logic
+// that is carried out upon invoking the action or the custom control method
+// for handling the information elicited from the user.
+type ActionGroupExecutor struct {
+	Lambda *string `json:"lambda,omitempty"`
+}
+
+// Contains details about an action group.
+type ActionGroupSummary struct {
+	ActionGroupID   *string      `json:"actionGroupID,omitempty"`
+	ActionGroupName *string      `json:"actionGroupName,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains details about an action group.
+type AgentActionGroup struct {
+	ActionGroupID   *string      `json:"actionGroupID,omitempty"`
+	ActionGroupName *string      `json:"actionGroupName,omitempty"`
+	AgentID         *string      `json:"agentID,omitempty"`
+	AgentVersion    *string      `json:"agentVersion,omitempty"`
+	ClientToken     *string      `json:"clientToken,omitempty"`
+	CreatedAt       *metav1.Time `json:"createdAt,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains details about an alias of an agent.
+type AgentAlias struct {
+	AgentAliasName *string      `json:"agentAliasName,omitempty"`
+	AgentID        *string      `json:"agentID,omitempty"`
+	ClientToken    *string      `json:"clientToken,omitempty"`
+	CreatedAt      *metav1.Time `json:"createdAt,omitempty"`
+	Description    *string      `json:"description,omitempty"`
+	FailureReasons []*string    `json:"failureReasons,omitempty"`
+	UpdatedAt      *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains details about the history of the alias.
+type AgentAliasHistoryEvent struct {
+	EndDate   *metav1.Time `json:"endDate,omitempty"`
+	StartDate *metav1.Time `json:"startDate,omitempty"`
+}
+
+// Contains details about the routing configuration of the alias.
+type AgentAliasRoutingConfigurationListItem struct {
+	AgentVersion *string `json:"agentVersion,omitempty"`
+}
+
+// Contains details about an alias of an agent.
+type AgentAliasSummary struct {
+	AgentAliasName *string      `json:"agentAliasName,omitempty"`
+	CreatedAt      *metav1.Time `json:"createdAt,omitempty"`
+	Description    *string      `json:"description,omitempty"`
+	UpdatedAt      *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// An agent collaborator.
+type AgentCollaborator struct {
+	AgentID          *string      `json:"agentID,omitempty"`
+	AgentVersion     *string      `json:"agentVersion,omitempty"`
+	ClientToken      *string      `json:"clientToken,omitempty"`
+	CollaboratorID   *string      `json:"collaboratorID,omitempty"`
+	CollaboratorName *string      `json:"collaboratorName,omitempty"`
+	CreatedAt        *metav1.Time `json:"createdAt,omitempty"`
+	LastUpdatedAt    *metav1.Time `json:"lastUpdatedAt,omitempty"`
+}
+
+// An agent collaborator summary.
+type AgentCollaboratorSummary struct {
+	AgentID          *string      `json:"agentID,omitempty"`
+	AgentVersion     *string      `json:"agentVersion,omitempty"`
+	CollaboratorID   *string      `json:"collaboratorID,omitempty"`
+	CollaboratorName *string      `json:"collaboratorName,omitempty"`
+	CreatedAt        *metav1.Time `json:"createdAt,omitempty"`
+	LastUpdatedAt    *metav1.Time `json:"lastUpdatedAt,omitempty"`
+}
+
+// Contains details about a knowledge base that is associated with an agent.
+type AgentKnowledgeBase struct {
+	AgentID         *string      `json:"agentID,omitempty"`
+	AgentVersion    *string      `json:"agentVersion,omitempty"`
+	CreatedAt       *metav1.Time `json:"createdAt,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains details about a knowledge base associated with an agent.
+type AgentKnowledgeBaseSummary struct {
+	Description     *string      `json:"description,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains details about an agent.
+type AgentSummary struct {
+	AgentID     *string `json:"agentID,omitempty"`
+	AgentName   *string `json:"agentName,omitempty"`
+	AgentStatus *string `json:"agentStatus,omitempty"`
+	Description *string `json:"description,omitempty"`
+	// Details about a guardrail associated with a resource.
+	GuardrailConfiguration *GuardrailConfiguration `json:"guardrailConfiguration,omitempty"`
+	LatestAgentVersion     *string                 `json:"latestAgentVersion,omitempty"`
+	UpdatedAt              *metav1.Time            `json:"updatedAt,omitempty"`
+}
+
+// Contains details about a version of an agent.
+type AgentVersion struct {
+	AgentARN                 *string      `json:"agentARN,omitempty"`
+	AgentCollaboration       *string      `json:"agentCollaboration,omitempty"`
+	AgentID                  *string      `json:"agentID,omitempty"`
+	AgentName                *string      `json:"agentName,omitempty"`
+	AgentResourceRoleARN     *string      `json:"agentResourceRoleARN,omitempty"`
+	AgentStatus              *string      `json:"agentStatus,omitempty"`
+	CreatedAt                *metav1.Time `json:"createdAt,omitempty"`
+	CustomerEncryptionKeyARN *string      `json:"customerEncryptionKeyARN,omitempty"`
+	Description              *string      `json:"description,omitempty"`
+	FailureReasons           []*string    `json:"failureReasons,omitempty"`
+	FoundationModel          *string      `json:"foundationModel,omitempty"`
+	// Details about a guardrail associated with a resource.
+	GuardrailConfiguration  *GuardrailConfiguration `json:"guardrailConfiguration,omitempty"`
+	IdleSessionTTLInSeconds *int64                  `json:"idleSessionTTLInSeconds,omitempty"`
+	Instruction             *string                 `json:"instruction,omitempty"`
+	// Details of the memory configuration.
+	MemoryConfiguration *MemoryConfiguration `json:"memoryConfiguration,omitempty"`
+	// Contains configurations to override prompts in different parts of an agent
+	// sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
+	PromptOverrideConfiguration *PromptOverrideConfiguration `json:"promptOverrideConfiguration,omitempty"`
+	RecommendedActions          []*string                    `json:"recommendedActions,omitempty"`
+	UpdatedAt                   *metav1.Time                 `json:"updatedAt,omitempty"`
+}
+
+// Contains details about a version of an agent.
+type AgentVersionSummary struct {
+	AgentName    *string      `json:"agentName,omitempty"`
+	AgentStatus  *string      `json:"agentStatus,omitempty"`
+	AgentVersion *string      `json:"agentVersion,omitempty"`
+	CreatedAt    *metav1.Time `json:"createdAt,omitempty"`
+	Description  *string      `json:"description,omitempty"`
+	// Details about a guardrail associated with a resource.
+	GuardrailConfiguration *GuardrailConfiguration `json:"guardrailConfiguration,omitempty"`
+	UpdatedAt              *metav1.Time            `json:"updatedAt,omitempty"`
+}
+
+// Contains details about an agent.
+type Agent_SDK struct {
+	AgentARN             *string      `json:"agentARN,omitempty"`
+	AgentCollaboration   *string      `json:"agentCollaboration,omitempty"`
+	AgentID              *string      `json:"agentID,omitempty"`
+	AgentName            *string      `json:"agentName,omitempty"`
+	AgentResourceRoleARN *string      `json:"agentResourceRoleARN,omitempty"`
+	AgentStatus          *string      `json:"agentStatus,omitempty"`
+	AgentVersion         *string      `json:"agentVersion,omitempty"`
+	ClientToken          *string      `json:"clientToken,omitempty"`
+	CreatedAt            *metav1.Time `json:"createdAt,omitempty"`
+	// Details of custom orchestration.
+	CustomOrchestration      *CustomOrchestration `json:"customOrchestration,omitempty"`
+	CustomerEncryptionKeyARN *string              `json:"customerEncryptionKeyARN,omitempty"`
+	Description              *string              `json:"description,omitempty"`
+	FailureReasons           []*string            `json:"failureReasons,omitempty"`
+	FoundationModel          *string              `json:"foundationModel,omitempty"`
+	// Details about a guardrail associated with a resource.
+	GuardrailConfiguration  *GuardrailConfiguration `json:"guardrailConfiguration,omitempty"`
+	IdleSessionTTLInSeconds *int64                  `json:"idleSessionTTLInSeconds,omitempty"`
+	Instruction             *string                 `json:"instruction,omitempty"`
+	// Details of the memory configuration.
+	MemoryConfiguration *MemoryConfiguration `json:"memoryConfiguration,omitempty"`
+	OrchestrationType   *string              `json:"orchestrationType,omitempty"`
+	PreparedAt          *metav1.Time         `json:"preparedAt,omitempty"`
+	// Contains configurations to override prompts in different parts of an agent
+	// sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
+	PromptOverrideConfiguration *PromptOverrideConfiguration `json:"promptOverrideConfiguration,omitempty"`
+	RecommendedActions          []*string                    `json:"recommendedActions,omitempty"`
+	UpdatedAt                   *metav1.Time                 `json:"updatedAt,omitempty"`
+}
+
+// Contains information about content defined inline in bytes.
+type ByteContentDoc struct {
+	MimeType *string `json:"mimeType,omitempty"`
+}
+
+// Contains the content for the message you pass to, or receive from a model.
+// For more information, see Create a prompt using Prompt management (https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
+type ContentBlock struct {
+	Text *string `json:"text,omitempty"`
+}
+
+// Contains information about the identifier of the document to ingest into
+// a custom data source.
+type CustomDocumentIdentifier struct {
+	ID *string `json:"id,omitempty"`
+}
+
+// Details of custom orchestration.
+type CustomOrchestration struct {
+	// Contains details about the Lambda function containing the orchestration logic
+	// carried out upon invoking the custom orchestration.
+	Executor *OrchestrationExecutor `json:"executor,omitempty"`
+}
+
+// Contains details about a data source.
+type DataSource struct {
+	CreatedAt       *metav1.Time `json:"createdAt,omitempty"`
+	DataSourceID    *string      `json:"dataSourceID,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	FailureReasons  []*string    `json:"failureReasons,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	Name            *string      `json:"name,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains details about a data source.
+type DataSourceSummary struct {
+	DataSourceID    *string      `json:"dataSourceID,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	Name            *string      `json:"name,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains information about a version that the alias maps to.
+type FlowAliasRoutingConfigurationListItem struct {
+	FlowVersion *string `json:"flowVersion,omitempty"`
+}
+
+// Contains information about an alias of a flow.
+//
+// This data type is used in the following API operations:
+//
+//   - ListFlowAliases response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListFlowAliases.html#API_agent_ListFlowAliases_ResponseSyntax)
+type FlowAliasSummary struct {
+	CreatedAt   *metav1.Time `json:"createdAt,omitempty"`
+	Description *string      `json:"description,omitempty"`
+	Name        *string      `json:"name,omitempty"`
+	UpdatedAt   *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains the definition of a flow.
+type FlowSummary struct {
+	CreatedAt *metav1.Time `json:"createdAt,omitempty"`
+	UpdatedAt *metav1.Time `json:"updatedAt,omitempty"`
+	Version   *string      `json:"version,omitempty"`
+}
+
+// Contains information about a version of a flow.
+//
+// This data type is used in the following API operations:
+//
+//   - ListFlowVersions response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListFlowVersions.html#API_agent_ListFlowVersions_ResponseSyntax)
+type FlowVersionSummary struct {
+	CreatedAt *metav1.Time `json:"createdAt,omitempty"`
+}
+
+// Defines parameters that the agent needs to invoke from the user to complete
+// the function. Corresponds to an action in an action group.
+//
+// This data type is used in the following API operations:
+//
+//   - CreateAgentActionGroup request (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax)
+//
+//   - CreateAgentActionGroup response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_ResponseSyntax)
+//
+//   - UpdateAgentActionGroup request (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_RequestSyntax)
+//
+//   - UpdateAgentActionGroup response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax)
+//
+//   - GetAgentActionGroup response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax)
+type Function struct {
+	Name *string `json:"name,omitempty"`
+}
+
+// Details about a guardrail associated with a resource.
+type GuardrailConfiguration struct {
+	GuardrailIdentifier *string `json:"guardrailIdentifier,omitempty"`
+	GuardrailVersion    *string `json:"guardrailVersion,omitempty"`
+}
+
+// Contains inference parameters to use when the agent invokes a foundation
+// model in the part of the agent sequence defined by the promptType. For more
+// information, see Inference parameters for foundation models (https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
+type InferenceConfiguration struct {
+	MaximumLength *int64    `json:"maximumLength,omitempty"`
+	StopSequences []*string `json:"stopSequences,omitempty"`
+	Temperature   *float64  `json:"temperature,omitempty"`
+	TopK          *int64    `json:"topK,omitempty"`
+	TopP          *float64  `json:"topP,omitempty"`
+}
+
+// Contains details about a data ingestion job. Data sources are ingested into
+// a knowledge base so that Large Language Models (LLMs) can use your data.
+//
+// This data type is used in the following API operations:
+//
+//   - StartIngestionJob response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html#API_agent_StartIngestionJob_ResponseSyntax)
+//
+//   - GetIngestionJob response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html#API_agent_GetIngestionJob_ResponseSyntax)
+//
+//   - ListIngestionJob response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListIngestionJobs.html#API_agent_ListIngestionJobs_ResponseSyntax)
+type IngestionJob struct {
+	DataSourceID    *string      `json:"dataSourceID,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	FailureReasons  []*string    `json:"failureReasons,omitempty"`
+	IngestionJobID  *string      `json:"ingestionJobID,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	StartedAt       *metav1.Time `json:"startedAt,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains details about a data ingestion job.
+type IngestionJobSummary struct {
+	DataSourceID    *string      `json:"dataSourceID,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	IngestionJobID  *string      `json:"ingestionJobID,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	StartedAt       *metav1.Time `json:"startedAt,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains information about a knowledge base.
+type KnowledgeBase struct {
+	CreatedAt       *metav1.Time `json:"createdAt,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	FailureReasons  []*string    `json:"failureReasons,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	Name            *string      `json:"name,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains the details for a document that was ingested or deleted.
+type KnowledgeBaseDocumentDetail struct {
+	DataSourceID    *string      `json:"dataSourceID,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	StatusReason    *string      `json:"statusReason,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains configurations for a knowledge base node in a flow. This node takes
+// a query as the input and returns, as the output, the retrieved responses
+// directly (as an array) or a response generated based on the retrieved responses.
+// For more information, see Node types in Amazon Bedrock works (https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html)
+// in the Amazon Bedrock User Guide.
+type KnowledgeBaseFlowNodeConfiguration struct {
+	// Details about a guardrail associated with a resource.
+	GuardrailConfiguration *GuardrailConfiguration `json:"guardrailConfiguration,omitempty"`
+}
+
+// Contains details about a knowledge base.
+type KnowledgeBaseSummary struct {
+	Description     *string      `json:"description,omitempty"`
+	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
+	Name            *string      `json:"name,omitempty"`
+	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains configurations for a Lambda function node in the flow. You specify
+// the Lambda function to invoke and the inputs into the function. The output
+// is the response that is defined in the Lambda function. For more information,
+// see Node types in Amazon Bedrock works (https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html)
+// in the Amazon Bedrock User Guide.
+type LambdaFunctionFlowNodeConfiguration struct {
+	LambdaARN *string `json:"lambdaARN,omitempty"`
+}
+
+// Details of the memory configuration.
+type MemoryConfiguration struct {
+	EnabledMemoryTypes []*string `json:"enabledMemoryTypes,omitempty"`
+	// Configuration for SESSION_SUMMARY memory type enabled for the agent.
+	SessionSummaryConfiguration *SessionSummaryConfiguration `json:"sessionSummaryConfiguration,omitempty"`
+	StorageDays                 *int64                       `json:"storageDays,omitempty"`
+}
+
+// Contains the value of the metadata attribute. Choose a type and include the
+// field that corresponds to it.
+type MetadataAttributeValue struct {
+	BooleanValue *bool `json:"booleanValue,omitempty"`
+}
+
+// Contains details about the Lambda function containing the orchestration logic
+// carried out upon invoking the custom orchestration.
+type OrchestrationExecutor struct {
+	Lambda *string `json:"lambda,omitempty"`
+}
+
+// Contains details about a parameter in a function for an action group.
+//
+// This data type is used in the following API operations:
+//
+//   - CreateAgentActionGroup request (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax)
+//
+//   - CreateAgentActionGroup response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_ResponseSyntax)
+//
+//   - UpdateAgentActionGroup request (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_RequestSyntax)
+//
+//   - UpdateAgentActionGroup response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax)
+//
+//   - GetAgentActionGroup response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax)
+type ParameterDetail struct {
+	Required *bool `json:"required,omitempty"`
+}
+
+// Contains configurations to override a prompt template in one part of an agent
+// sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
+type PromptConfiguration struct {
+	BasePromptTemplate *string `json:"basePromptTemplate,omitempty"`
+	FoundationModel    *string `json:"foundationModel,omitempty"`
+	// Contains inference parameters to use when the agent invokes a foundation
+	// model in the part of the agent sequence defined by the promptType. For more
+	// information, see Inference parameters for foundation models (https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
+	InferenceConfiguration *InferenceConfiguration `json:"inferenceConfiguration,omitempty"`
+	ParserMode             *string                 `json:"parserMode,omitempty"`
+	PromptCreationMode     *string                 `json:"promptCreationMode,omitempty"`
+	PromptState            *string                 `json:"promptState,omitempty"`
+	PromptType             *string                 `json:"promptType,omitempty"`
+}
+
+// Contains configurations for a prompt node in the flow. You can use a prompt
+// from Prompt management or you can define one in this node. If the prompt
+// contains variables, the inputs into this node will fill in the variables.
+// The output from this node is the response generated by the model. For more
+// information, see Node types in Amazon Bedrock works (https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html)
+// in the Amazon Bedrock User Guide.
+type PromptFlowNodeConfiguration struct {
+	// Details about a guardrail associated with a resource.
+	GuardrailConfiguration *GuardrailConfiguration `json:"guardrailConfiguration,omitempty"`
+}
+
+// Contains inference configurations related to model inference for a prompt.
+// For more information, see Inference parameters (https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html).
+type PromptModelInferenceConfiguration struct {
+	MaxTokens     *int64    `json:"maxTokens,omitempty"`
+	StopSequences []*string `json:"stopSequences,omitempty"`
+	Temperature   *float64  `json:"temperature,omitempty"`
+	TopP          *float64  `json:"topP,omitempty"`
+}
+
+// Contains configurations to override prompts in different parts of an agent
+// sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
+type PromptOverrideConfiguration struct {
+	OverrideLambda       *string                `json:"overrideLambda,omitempty"`
+	PromptConfigurations []*PromptConfiguration `json:"promptConfigurations,omitempty"`
+}
+
+// Contains information about a prompt in your Prompt management tool.
+//
+// This data type is used in the following API operations:
+//
+//   - ListPrompts response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListPrompts.html#API_agent_ListPrompts_ResponseSyntax)
+type PromptSummary struct {
+	CreatedAt *metav1.Time `json:"createdAt,omitempty"`
+	UpdatedAt *metav1.Time `json:"updatedAt,omitempty"`
+	Version   *string      `json:"version,omitempty"`
+}
+
+// Contains configurations for authentication to an Amazon Redshift provisioned
+// data warehouse. Specify the type of authentication to use in the type field
+// and include the corresponding field. If you specify IAM authentication, you
+// don't need to include another field.
+type RedshiftProvisionedAuthConfiguration struct {
+	DatabaseUser *string `json:"databaseUser,omitempty"`
+}
+
+// Contains the configuration for server-side encryption.
+type ServerSideEncryptionConfiguration struct {
+	KMSKeyARN *string `json:"kmsKeyARN,omitempty"`
+}
+
+// Configuration for SESSION_SUMMARY memory type enabled for the agent.
+type SessionSummaryConfiguration struct {
+	MaxRecentSessions *int64 `json:"maxRecentSessions,omitempty"`
+}
+
+// A Lambda function that processes documents.
+type TransformationLambdaConfiguration struct {
+	LambdaARN *string `json:"lambdaARN,omitempty"`
+}

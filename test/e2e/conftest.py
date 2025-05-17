@@ -41,5 +41,5 @@ def k8s_client():
     return k8s._get_k8s_api_client()
 
 @pytest.fixture(scope='module')
-def bedrock-agent_client():
+def bedrock_agent_client():
     return boto3.client('bedrock-agent')

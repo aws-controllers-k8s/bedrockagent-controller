@@ -9,6 +9,7 @@ rules:
 - apiGroups:
   - bedrockagent.services.k8s.aws
   resources:
+  - agents
   verbs:
   - get
   - list
