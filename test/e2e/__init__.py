@@ -18,7 +18,7 @@ from pathlib import Path
 from acktest.resources import load_resource_file
 
 SERVICE_NAME = "bedrock-agent"
-CRD_GROUP = "bedrock-agent.services.k8s.aws"
+CRD_GROUP = "bedrockagent.services.k8s.aws"
 CRD_VERSION = "v1alpha1"
 
 # PyTest marker for the current service
