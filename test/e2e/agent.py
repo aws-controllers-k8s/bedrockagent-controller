@@ -95,9 +95,9 @@ def get(agent_id: str):
 
     If no such Agent exists, returns None.
     """
-    c = boto3.client("bedrock-agent")
+    client = boto3.client("bedrock-agent")
     try:
-        resp = c.get_vpc_origin(Id=agent_id)
+        resp = client.get_agent(agent_id)
         return resp["agent"]
-    except c.exceptions.ResourceNotFoundException:
+    except client.exceptions.ResourceNotFoundException:
         return None
