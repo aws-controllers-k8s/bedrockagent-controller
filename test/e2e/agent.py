@@ -97,7 +97,7 @@ def get(agent_id: str):
     """
     client = boto3.client("bedrock-agent")
     try:
-        resp = client.get_agent(agent_id)
+        resp = client.get_agent(agentId=agent_id)
         return resp["agent"]
     except client.exceptions.ResourceNotFoundException:
         return None
