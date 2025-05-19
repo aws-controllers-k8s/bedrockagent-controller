@@ -39,7 +39,7 @@ logger = getLogger(__name__)
 def simple_agent():
     agent_name = random_suffix_name("bedrock-test-agent", 32)
     agent_description = "Test agent for e2e testing"
-    agent_instruction = "You are a helpful assistant"
+    agent_instruction = "You are a helpful assistant that provides information about AWS services."
     agent_model = "arn:aws:bedrock:us-east-2:807147659905:inference-profile/us.amazon.nova-lite-v1:0"
     agent_role_arn = get_bootstrap_resources().AgentRole.arn
     agent_prompt_temp = "0.7"
