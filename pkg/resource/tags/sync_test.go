@@ -307,11 +307,11 @@ func TestSyncResourceTags(t *testing.T) {
 
 func TestComputeTagsDelta(t *testing.T) {
 	tests := []struct {
-		name             string
-		a                map[string]*string
-		b                map[string]*string
-		wantAddOrUpdate  map[string]string
-		wantRemoved      []string
+		name            string
+		a               map[string]*string
+		b               map[string]*string
+		wantAddOrUpdate map[string]string
+		wantRemoved     []string
 	}{
 		{
 			name: "No changes",
@@ -391,12 +391,12 @@ func TestComputeTagsDelta(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotAddOrUpdate, gotRemoved := computeTagsDelta(tt.a, tt.b)
-			
+
 			// Check added or updated tags
 			if !reflect.DeepEqual(gotAddOrUpdate, tt.wantAddOrUpdate) {
 				t.Errorf("computeTagsDelta() addedOrUpdated = %v, want %v", gotAddOrUpdate, tt.wantAddOrUpdate)
 			}
-			
+
 			// For removed tags, we need to check if all expected keys are present
 			// regardless of order
 			if len(gotRemoved) != len(tt.wantRemoved) {
@@ -406,7 +406,7 @@ func TestComputeTagsDelta(t *testing.T) {
 				for _, key := range gotRemoved {
 					removedMap[key] = true
 				}
-				
+
 				for _, key := range tt.wantRemoved {
 					if !removedMap[key] {
 						t.Errorf("computeTagsDelta() removed does not contain key %s", key)

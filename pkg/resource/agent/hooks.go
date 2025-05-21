@@ -56,7 +56,7 @@ func compareAgentStatus(
 
 // comparePropertyOverrideConfiguration compares delta of Spec.PromptOverrideConfiguration between two resources.
 // If PromptOverrideConfiguration is not set for the desired resource no delta is set. This is to prevent errors when
-// AWS has set defaults that are not considered valid be UpdateAgent.
+// AWS has set defaults that are not considered valid by UpdateAgent.
 func comparePropertyOverrideConfiguration(
 	desired *resource,
 	latest *resource,
