@@ -46,8 +46,8 @@ func prepareAgent(
 // compareAgentStatus checks if the latest AgentStatus is in the PREPARED state.
 // If not a virtual spec field Spec.AgentStatus is added to the delta.
 func compareAgentStatus(
-	latestStatus *string,
 	delta *ackcompare.Delta,
+	latestStatus *string,
 ) {
 	if latestStatus != nil && *latestStatus != string(svcsdktypes.AgentAliasStatusPrepared) {
 		delta.Add("Spec.AgentStatus", latestStatus, string(svcsdktypes.AgentAliasStatusPrepared))
@@ -58,9 +58,9 @@ func compareAgentStatus(
 // If PromptOverrideConfiguration is not set for the desired resource no delta is set. This is to prevent errors when
 // AWS has set defaults that are not considered valid by UpdateAgent.
 func comparePropertyOverrideConfiguration(
+	delta *ackcompare.Delta,
 	desired *resource,
 	latest *resource,
-	delta *ackcompare.Delta,
 ) {
 	if ackcompare.HasNilDifference(desired.ko.Spec.PromptOverrideConfiguration, latest.ko.Spec.PromptOverrideConfiguration) {
 		delta.Add("Spec.PromptOverrideConfiguration", desired.ko.Spec.PromptOverrideConfiguration, latest.ko.Spec.PromptOverrideConfiguration)

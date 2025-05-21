@@ -44,9 +44,9 @@ func newResourceDelta(
 	}
 	// Hack to ensure that reconcile loop triggers update for PrepareAgent call
 	// if AgentStatus is not in PREPARED state.
-	compareAgentStatus(b.ko.Status.AgentStatus, delta)
+	compareAgentStatus(delta, b.ko.Status.AgentStatus)
 
-	comparePropertyOverrideConfiguration(a, b, delta)
+	comparePropertyOverrideConfiguration(delta, a, b)
 
 	if ackcompare.HasNilDifference(a.ko.Spec.AgentCollaboration, b.ko.Spec.AgentCollaboration) {
 		delta.Add("Spec.AgentCollaboration", a.ko.Spec.AgentCollaboration, b.ko.Spec.AgentCollaboration)

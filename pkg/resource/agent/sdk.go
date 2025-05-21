@@ -306,6 +306,9 @@ func (rm *resourceManager) sdkFind(
 
 	rm.setStatusDefaults(ko)
 	ko.Spec.Tags, err = rm.getTags(ctx, string(*ko.Status.ACKResourceMetadata.ARN))
+	if err != nil {
+		return nil, err
+	}
 	return &resource{ko}, nil
 }
 
@@ -575,12 +578,6 @@ func (rm *resourceManager) sdkCreate(
 	}
 
 	rm.setStatusDefaults(ko)
-	// Agent is created in NOT_PREPARED state which is not fully ready.
-	// To complete setup need to call PrepareAgent. Note this call may
-	// fail as Agent has been created recently. Will need to ensure that
-	// subsequent reconcile loops retry if Agent is not PREPARED.
-	prepareAgent(ctx, rm.sdkapi, rm.metrics, *ko.Status.AgentID)
-
 	return &resource{ko}, nil
 }
 
@@ -639,7 +636,7 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy
@@ -1351,8 +1348,7 @@ func (rm *resourceManager) terminalAWSError(err error) bool {
 		return false
 	}
 	switch terminalErr.ErrorCode() {
-	case "ValidationException",
-		"ResourceNotFoundException":
+	case "ValidationException":
 		return true
 	default:
 		return false
