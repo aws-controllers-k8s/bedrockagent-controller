@@ -81,12 +81,15 @@ def simple_agent():
     assert cr is not None
     assert "status" in cr
     assert "agentID" in cr["status"]
+    assert "ackResourceMetadata" in cr["status"]
+    assert "arn" in cr["status"]["ackResourceMetadata"]
     agent_id = cr["status"]["agentID"]
+    agent_arn = cr["status"]["ackResourceMetadata"]["arn"]
 
     agent.wait_until_exists(agent_id)
     logger.info("Agent %s exists in cluster", agent_name)
 
-    yield (ref, cr, agent_id)
+    yield (ref, cr, agent_id, agent_arn)
 
     logger.info("Deleting Agent %s", agent_name)
     _, deleted = k8s.delete_custom_resource(
@@ -103,7 +106,7 @@ def simple_agent():
 @pytest.mark.canary
 class TestAgent:
     def test_crud(self, simple_agent):
-        ref, res, agent_id = simple_agent
+        ref, res, agent_id, agent_arn = simple_agent
 
         assert k8s.wait_on_condition(
             ref,
@@ -135,3 +138,47 @@ class TestAgent:
         assert latest is not None
         assert "description" in latest
         assert latest["description"] == "Updated test agent description"
+
+    def test_tags(self, simple_agent):
+        ref, res, agent_id, agent_arn = simple_agent
+
+        assert k8s.wait_on_condition(
+            ref,
+            "ACK.ResourceSynced",
+            "True",
+            wait_periods=CHECK_STATUS_WAIT_PERIODS,
+            period_length=CHECK_STATUS_WAIT_SECONDS
+        )
+
+        cr = k8s.get_resource(ref)
+        assert cr is not None
+        assert "spec" in cr
+        assert "tags" in cr["spec"]
+        assert cr["spec"]["tags"] == {"test1": "value1"}
+
+        latest = agent.getTags(agent_arn)
+        assert latest is not None
+        assert "test1" in latest
+        assert latest["test1"] == "value1"
+
+        # Test update
+        updates = {
+            "spec": {
+                "tags": {
+                    "test1": "newValue1",
+                    "test2": "value2", 
+                    "test3": "value3"
+                }
+            },
+        }
+        k8s.patch_custom_resource(ref, updates)
+        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
+
+        latest = agent.getTags(agent_arn)
+        assert latest is not None
+        assert "test1" in latest
+        assert latest["test1"] == "newValue1"
+        assert "test2" in latest
+        assert latest["test2"] == "value2"
+        assert "test3" in latest
+        assert latest["test3"] == "value3"

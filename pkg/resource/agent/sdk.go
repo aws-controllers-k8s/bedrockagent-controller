@@ -636,7 +636,7 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy
@@ -775,7 +775,10 @@ func (rm *resourceManager) sdkUpdate(
 	// If AgentStatus is not in PREPARED state we need to call PrepareAgent to finalize setup
 	// of Agent. Uses hack (see delta.go) to trigger update from non-existent Spec.AgentStatus
 	if delta.DifferentAt("Spec.AgentStatus") {
-		prepareAgent(ctx, rm.sdkapi, rm.metrics, *desired.ko.Status.AgentID)
+		err = prepareAgent(ctx, rm.sdkapi, rm.metrics, *desired.ko.Status.AgentID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if delta.DifferentAt("Spec.Tags") {

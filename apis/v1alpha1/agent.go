@@ -32,8 +32,8 @@ type AgentSpec struct {
 	AgentName *string `json:"agentName"`
 	// The Amazon Resource Name (ARN) of the IAM role with permissions to invoke
 	// API operations on the agent.
-	// +kubebuilder:validation:Required
-	AgentResourceRoleARN *string `json:"agentResourceRoleARN"`
+	AgentResourceRoleARN *string                                  `json:"agentResourceRoleARN,omitempty"`
+	AgentResourceRoleRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"agentResourceRoleRef,omitempty"`
 	// Contains details of the custom orchestration configured for the agent.
 	CustomOrchestration *CustomOrchestration `json:"customOrchestration,omitempty"`
 	// The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.

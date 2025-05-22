@@ -101,3 +101,16 @@ def get(agent_id: str):
         return resp["agent"]
     except client.exceptions.ResourceNotFoundException:
         return None
+    
+def getTags(agent_arn: str):
+    """Returns a dict containing the Tags for Bedrock Agent resource from the Bedrock ListTagsForResource
+    API.
+
+    If no such Resource exists, returns None.
+    """
+    client = boto3.client("bedrock-agent")
+    try:
+        resp = client.list_tags_for_resource(resourceArn=agent_arn)
+        return resp["tags"]
+    except client.exceptions.ResourceNotFoundException:
+        return None

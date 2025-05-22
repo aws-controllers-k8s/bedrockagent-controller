@@ -23,6 +23,10 @@ resources:
       AgentResourceRoleARN:
         # AgentResourceRoleARN is not marked as required in CreateAgent, but is required by UpdateAgent
         is_required: true
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
       PromptOverrideConfiguration:
         late_initialize: {}
         compare:

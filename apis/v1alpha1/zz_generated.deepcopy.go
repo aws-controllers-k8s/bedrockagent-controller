@@ -501,6 +501,11 @@ func (in *AgentSpec) DeepCopyInto(out *AgentSpec) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.AgentResourceRoleRef != nil {
+		in, out := &in.AgentResourceRoleRef, &out.AgentResourceRoleRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomOrchestration != nil {
 		in, out := &in.CustomOrchestration, &out.CustomOrchestration
 		*out = new(CustomOrchestration)

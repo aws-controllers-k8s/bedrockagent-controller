@@ -40,7 +40,7 @@ func prepareAgent(
 	})
 	metrics.RecordAPICall("UPDATE", "PREPARE_AGENT", err)
 
-	return nil
+	return err
 }
 
 // compareAgentStatus checks if the latest AgentStatus is in the PREPARED state.

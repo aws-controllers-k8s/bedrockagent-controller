@@ -69,6 +69,9 @@ func newResourceDelta(
 			delta.Add("Spec.AgentResourceRoleARN", a.ko.Spec.AgentResourceRoleARN, b.ko.Spec.AgentResourceRoleARN)
 		}
 	}
+	if !reflect.DeepEqual(a.ko.Spec.AgentResourceRoleRef, b.ko.Spec.AgentResourceRoleRef) {
+		delta.Add("Spec.AgentResourceRoleRef", a.ko.Spec.AgentResourceRoleRef, b.ko.Spec.AgentResourceRoleRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.CustomOrchestration, b.ko.Spec.CustomOrchestration) {
 		delta.Add("Spec.CustomOrchestration", a.ko.Spec.CustomOrchestration, b.ko.Spec.CustomOrchestration)
 	} else if a.ko.Spec.CustomOrchestration != nil && b.ko.Spec.CustomOrchestration != nil {
