@@ -2,7 +2,7 @@ sdk_names:
   model_name: bedrock-agent
 ignore:
   resource_names:
-      - Agent
+      #- Agent
       - AgentActionGroup
       - AgentAlias
       - DataSource
@@ -12,3 +12,46 @@ ignore:
       - KnowledgeBase
       - Prompt
       - PromptVersion
+  field_paths:
+    # Uses unhandled type 'smithy.api#document'
+    - "PromptOverrideConfiguration.PromptConfigurations.PromptConfiguration.AdditionalModelRequestFields"
+    - CreateAgentInput.ClientToken
+
+resources:
+  Agent:
+    fields:
+      AgentResourceRoleARN:
+        # AgentResourceRoleARN is not marked as required in CreateAgent, but is required by UpdateAgent
+        is_required: true
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
+      PromptOverrideConfiguration:
+        late_initialize: {}
+        compare:
+          # Handled in custom hook
+          is_ignored: true
+      Tags:
+        from:
+          operation: TagResource
+          path: Tags
+          
+    synced:
+      when:
+        - path: Status.AgentStatus
+          in:
+            - PREPARED
+    exceptions:
+      terminal_codes:
+        - ValidationException
+
+    hooks:
+      delta_pre_compare:
+        template_path: hooks/agent/delta_pre_compare.go.tpl
+      sdk_read_one_post_set_output:
+        template_path: hooks/agent/sdk_read_one_post_set_output.go.tpl
+      sdk_update_pre_build_request:
+        template_path: hooks/agent/sdk_update_pre_build_request.go.tpl
+
+

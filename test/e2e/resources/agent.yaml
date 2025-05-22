@@ -1,0 +1,49 @@
+apiVersion: bedrockagent.services.k8s.aws/v1alpha1
+kind: Agent
+metadata:
+  name: $AGENT_NAME
+spec:
+  tags:
+    $TAG_KEY_1: $TAG_VALUE_1
+  agentName: $AGENT_NAME
+  description: $AGENT_DESCRIPTION
+  instruction: $AGENT_INSTRUCTION
+  foundationModel: $AGENT_MODEL
+  agentResourceRoleARN: $AGENT_ROLE_ARN
+  promptOverrideConfiguration:
+    promptConfigurations:
+      - promptType: "PRE_PROCESSING"
+        promptCreationMode: "OVERRIDDEN"
+        basePromptTemplate: |
+          {
+            "anthropic_version": "bedrock-2023-05-31",
+            "system": "
+                $instruction$
+                
+              You are a helpful assistant with tool calling capabilities.
+
+            Given the following functions, please respond with a JSON for a function call with its proper arguments that best answers the given prompt.
+
+            Respond in the format {\"name\": function name, \"parameters\": dictionary of argument name and its value}. Do not use variables.
+
+            When you receive a tool call response, use the output to format an answer to the original user question.
+
+            Provide your final answer to the user's question within <answer></answer> xml tags.
+            $knowledge_base_additional_guideline$
+            $prompt_session_attributes$
+            ",
+            "messages": [
+                {
+                    "role" : "user",
+                    "content" : "$question$"
+                },
+                {
+                    "role" : "assistant",
+                    "content" : "$agent_scratchpad$"
+                }
+            ]
+          }
+        inferenceConfiguration:
+          temperature: $AGENT_PROMPT_TEMP
+          topP: $AGENT_TOP_P
+          maximumLength: $AGENT_MAX_LENGTH

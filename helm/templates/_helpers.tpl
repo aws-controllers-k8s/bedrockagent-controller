@@ -70,6 +70,34 @@ rules:
   - list
   - watch
 - apiGroups:
+  - bedrockagent.services.k8s.aws
+  resources:
+  - agents
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bedrockagent.services.k8s.aws
+  resources:
+  - agents/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.services.k8s.aws
+  resources:
+  - roles
+  - roles/status
+  verbs:
+  - get
+  - list
+- apiGroups:
   - services.k8s.aws
   resources:
   - adoptedresources
