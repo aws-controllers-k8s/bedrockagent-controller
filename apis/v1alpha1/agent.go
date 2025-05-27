@@ -28,15 +28,21 @@ type AgentSpec struct {
 	// The agent's collaboration role.
 	AgentCollaboration *string `json:"agentCollaboration,omitempty"`
 	// A name for the agent that you create.
+	//
+	// Regex Pattern: `^([0-9a-zA-Z][_-]?){1,100}$`
 	// +kubebuilder:validation:Required
 	AgentName *string `json:"agentName"`
 	// The Amazon Resource Name (ARN) of the IAM role with permissions to invoke
 	// API operations on the agent.
+	//
+	// Regex Pattern: `^arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+$`
 	AgentResourceRoleARN *string                                  `json:"agentResourceRoleARN,omitempty"`
 	AgentResourceRoleRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"agentResourceRoleRef,omitempty"`
 	// Contains details of the custom orchestration configured for the agent.
 	CustomOrchestration *CustomOrchestration `json:"customOrchestration,omitempty"`
 	// The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.
+	//
+	// Regex Pattern: `^arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$`
 	CustomerEncryptionKeyARN *string `json:"customerEncryptionKeyARN,omitempty"`
 	// A description of the agent.
 	Description *string `json:"description,omitempty"`
@@ -70,6 +76,8 @@ type AgentSpec struct {
 	//     specify the ARN of the imported model. You can get the model ARN from
 	//     a successful call to CreateModelImportJob (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html)
 	//     or from the Imported models page in the Amazon Bedrock console.
+	//
+	// Regex Pattern: `^(arn:aws(-[^:]{1,12})?:(bedrock|sagemaker):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$`
 	FoundationModel *string `json:"foundationModel,omitempty"`
 	// The unique Guardrail configuration assigned to the agent when it is created.
 	GuardrailConfiguration *GuardrailConfiguration `json:"guardrailConfiguration,omitempty"`
@@ -110,6 +118,8 @@ type AgentStatus struct {
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
 	// The unique identifier of the agent.
+	//
+	// Regex Pattern: `^[0-9a-zA-Z]{10}$`
 	// +kubebuilder:validation:Optional
 	AgentID *string `json:"agentID,omitempty"`
 	// The status of the agent and whether it is ready for use. The following statuses
@@ -131,12 +141,16 @@ type AgentStatus struct {
 	// +kubebuilder:validation:Optional
 	AgentStatus *string `json:"agentStatus,omitempty"`
 	// The version of the agent.
+	//
+	// Regex Pattern: `^DRAFT$`
 	// +kubebuilder:validation:Optional
 	AgentVersion *string `json:"agentVersion,omitempty"`
 	// A unique, case-sensitive identifier to ensure that the API request completes
 	// no more than one time. If this token matches a previous request, Amazon Bedrock
 	// ignores the request, but does not return an error. For more information,
 	// see Ensuring idempotency (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
+	//
+	// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}$`
 	// +kubebuilder:validation:Optional
 	ClientToken *string `json:"clientToken,omitempty"`
 	// The time at which the agent was created.
