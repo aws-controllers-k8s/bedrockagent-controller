@@ -9,7 +9,7 @@ ignore:
       - Flow
       - FlowAlias
       - FlowVersion
-      - KnowledgeBase
+      #- KnowledgeBase
       - Prompt
       - PromptVersion
   field_paths:
@@ -36,7 +36,7 @@ resources:
         from:
           operation: TagResource
           path: Tags
-          
+
     synced:
       when:
         - path: Status.AgentStatus
@@ -54,4 +54,37 @@ resources:
       sdk_update_pre_build_request:
         template_path: hooks/agent/sdk_update_pre_build_request.go.tpl
 
-
+  KnowledgeBase:
+    operations:
+      create:
+        name: CreateKnowledgeBase
+      read_one:
+        name: GetKnowledgeBase
+      read_many:
+        name: ListKnowledgeBases
+      update:
+        name: UpdateKnowledgeBase
+      delete:
+        name: DeleteKnowledgeBase
+    synced:
+      when:
+        - path: Status.Status
+          in:
+            - ACTIVE
+    fields:
+      Name:
+        is_required: true
+      RoleArn:
+        is_required: true
+      KnowledgeBaseConfiguration:
+        is_required: true
+      StorageConfiguration:
+        is_required: true
+      Tags:
+        from:
+          operation: TagResource
+          path: Tags
+    exceptions:
+      terminal_codes:
+        - ResourceNotFoundException
+        - ConflictException

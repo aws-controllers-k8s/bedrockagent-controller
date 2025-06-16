@@ -41,6 +41,7 @@ import (
 	svcresource "github.com/aws-controllers-k8s/bedrockagent-controller/pkg/resource"
 
 	_ "github.com/aws-controllers-k8s/bedrockagent-controller/pkg/resource/agent"
+	_ "github.com/aws-controllers-k8s/bedrockagent-controller/pkg/resource/knowledge_base"
 
 	"github.com/aws-controllers-k8s/bedrockagent-controller/pkg/version"
 )
