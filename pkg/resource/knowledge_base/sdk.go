@@ -951,217 +951,214 @@ func (rm *resourceManager) newCreateRequestPayload(
 ) (*svcsdk.CreateKnowledgeBaseInput, error) {
 	res := &svcsdk.CreateKnowledgeBaseInput{}
 
-	if r.ko.Spec.ClientToken != nil {
-		res.ClientToken = r.ko.Spec.ClientToken
-	}
 	if r.ko.Spec.Description != nil {
 		res.Description = r.ko.Spec.Description
 	}
 	if r.ko.Spec.KnowledgeBaseConfiguration != nil {
-		f2 := &svcsdktypes.KnowledgeBaseConfiguration{}
+		f1 := &svcsdktypes.KnowledgeBaseConfiguration{}
 		if r.ko.Spec.KnowledgeBaseConfiguration.KendraKnowledgeBaseConfiguration != nil {
-			f2f0 := &svcsdktypes.KendraKnowledgeBaseConfiguration{}
+			f1f0 := &svcsdktypes.KendraKnowledgeBaseConfiguration{}
 			if r.ko.Spec.KnowledgeBaseConfiguration.KendraKnowledgeBaseConfiguration.KendraIndexARN != nil {
-				f2f0.KendraIndexArn = r.ko.Spec.KnowledgeBaseConfiguration.KendraKnowledgeBaseConfiguration.KendraIndexARN
+				f1f0.KendraIndexArn = r.ko.Spec.KnowledgeBaseConfiguration.KendraKnowledgeBaseConfiguration.KendraIndexARN
 			}
-			f2.KendraKnowledgeBaseConfiguration = f2f0
+			f1.KendraKnowledgeBaseConfiguration = f1f0
 		}
 		if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration != nil {
-			f2f1 := &svcsdktypes.SqlKnowledgeBaseConfiguration{}
+			f1f1 := &svcsdktypes.SqlKnowledgeBaseConfiguration{}
 			if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration != nil {
-				f2f1f0 := &svcsdktypes.RedshiftConfiguration{}
+				f1f1f0 := &svcsdktypes.RedshiftConfiguration{}
 				if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration != nil {
-					f2f1f0f0 := &svcsdktypes.RedshiftQueryEngineConfiguration{}
+					f1f1f0f0 := &svcsdktypes.RedshiftQueryEngineConfiguration{}
 					if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration != nil {
-						f2f1f0f0f0 := &svcsdktypes.RedshiftProvisionedConfiguration{}
+						f1f1f0f0f0 := &svcsdktypes.RedshiftProvisionedConfiguration{}
 						if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration != nil {
-							f2f1f0f0f0f0 := &svcsdktypes.RedshiftProvisionedAuthConfiguration{}
+							f1f1f0f0f0f0 := &svcsdktypes.RedshiftProvisionedAuthConfiguration{}
 							if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.DatabaseUser != nil {
-								f2f1f0f0f0f0.DatabaseUser = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.DatabaseUser
+								f1f1f0f0f0f0.DatabaseUser = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.DatabaseUser
 							}
 							if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.Type != nil {
-								f2f1f0f0f0f0.Type = svcsdktypes.RedshiftProvisionedAuthType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.Type)
+								f1f1f0f0f0f0.Type = svcsdktypes.RedshiftProvisionedAuthType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.Type)
 							}
 							if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.UsernamePasswordSecretARN != nil {
-								f2f1f0f0f0f0.UsernamePasswordSecretArn = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.UsernamePasswordSecretARN
+								f1f1f0f0f0f0.UsernamePasswordSecretArn = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.UsernamePasswordSecretARN
 							}
-							f2f1f0f0f0.AuthConfiguration = f2f1f0f0f0f0
+							f1f1f0f0f0.AuthConfiguration = f1f1f0f0f0f0
 						}
 						if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.ClusterIdentifier != nil {
-							f2f1f0f0f0.ClusterIdentifier = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.ClusterIdentifier
+							f1f1f0f0f0.ClusterIdentifier = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.ClusterIdentifier
 						}
-						f2f1f0f0.ProvisionedConfiguration = f2f1f0f0f0
+						f1f1f0f0.ProvisionedConfiguration = f1f1f0f0f0
 					}
 					if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration != nil {
-						f2f1f0f0f1 := &svcsdktypes.RedshiftServerlessConfiguration{}
+						f1f1f0f0f1 := &svcsdktypes.RedshiftServerlessConfiguration{}
 						if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration != nil {
-							f2f1f0f0f1f0 := &svcsdktypes.RedshiftServerlessAuthConfiguration{}
+							f1f1f0f0f1f0 := &svcsdktypes.RedshiftServerlessAuthConfiguration{}
 							if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration.Type != nil {
-								f2f1f0f0f1f0.Type = svcsdktypes.RedshiftServerlessAuthType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration.Type)
+								f1f1f0f0f1f0.Type = svcsdktypes.RedshiftServerlessAuthType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration.Type)
 							}
 							if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration.UsernamePasswordSecretARN != nil {
-								f2f1f0f0f1f0.UsernamePasswordSecretArn = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration.UsernamePasswordSecretARN
+								f1f1f0f0f1f0.UsernamePasswordSecretArn = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration.UsernamePasswordSecretARN
 							}
-							f2f1f0f0f1.AuthConfiguration = f2f1f0f0f1f0
+							f1f1f0f0f1.AuthConfiguration = f1f1f0f0f1f0
 						}
 						if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.WorkgroupARN != nil {
-							f2f1f0f0f1.WorkgroupArn = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.WorkgroupARN
+							f1f1f0f0f1.WorkgroupArn = r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.WorkgroupARN
 						}
-						f2f1f0f0.ServerlessConfiguration = f2f1f0f0f1
+						f1f1f0f0.ServerlessConfiguration = f1f1f0f0f1
 					}
 					if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.Type != nil {
-						f2f1f0f0.Type = svcsdktypes.RedshiftQueryEngineType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.Type)
+						f1f1f0f0.Type = svcsdktypes.RedshiftQueryEngineType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.Type)
 					}
-					f2f1f0.QueryEngineConfiguration = f2f1f0f0
+					f1f1f0.QueryEngineConfiguration = f1f1f0f0
 				}
 				if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration != nil {
-					f2f1f0f1 := &svcsdktypes.QueryGenerationConfiguration{}
+					f1f1f0f1 := &svcsdktypes.QueryGenerationConfiguration{}
 					if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.ExecutionTimeoutSeconds != nil {
 						executionTimeoutSecondsCopy0 := *r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.ExecutionTimeoutSeconds
 						if executionTimeoutSecondsCopy0 > math.MaxInt32 || executionTimeoutSecondsCopy0 < math.MinInt32 {
 							return nil, fmt.Errorf("error: field executionTimeoutSeconds is of type int32")
 						}
 						executionTimeoutSecondsCopy := int32(executionTimeoutSecondsCopy0)
-						f2f1f0f1.ExecutionTimeoutSeconds = &executionTimeoutSecondsCopy
+						f1f1f0f1.ExecutionTimeoutSeconds = &executionTimeoutSecondsCopy
 					}
 					if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.GenerationContext != nil {
-						f2f1f0f1f1 := &svcsdktypes.QueryGenerationContext{}
+						f1f1f0f1f1 := &svcsdktypes.QueryGenerationContext{}
 						if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.GenerationContext.CuratedQueries != nil {
-							f2f1f0f1f1f0 := []svcsdktypes.CuratedQuery{}
-							for _, f2f1f0f1f1f0iter := range r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.GenerationContext.CuratedQueries {
-								f2f1f0f1f1f0elem := &svcsdktypes.CuratedQuery{}
-								if f2f1f0f1f1f0iter.NATuralLanguage != nil {
-									f2f1f0f1f1f0elem.NaturalLanguage = f2f1f0f1f1f0iter.NATuralLanguage
+							f1f1f0f1f1f0 := []svcsdktypes.CuratedQuery{}
+							for _, f1f1f0f1f1f0iter := range r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.GenerationContext.CuratedQueries {
+								f1f1f0f1f1f0elem := &svcsdktypes.CuratedQuery{}
+								if f1f1f0f1f1f0iter.NATuralLanguage != nil {
+									f1f1f0f1f1f0elem.NaturalLanguage = f1f1f0f1f1f0iter.NATuralLanguage
 								}
-								if f2f1f0f1f1f0iter.SQL != nil {
-									f2f1f0f1f1f0elem.Sql = f2f1f0f1f1f0iter.SQL
+								if f1f1f0f1f1f0iter.SQL != nil {
+									f1f1f0f1f1f0elem.Sql = f1f1f0f1f1f0iter.SQL
 								}
-								f2f1f0f1f1f0 = append(f2f1f0f1f1f0, *f2f1f0f1f1f0elem)
+								f1f1f0f1f1f0 = append(f1f1f0f1f1f0, *f1f1f0f1f1f0elem)
 							}
-							f2f1f0f1f1.CuratedQueries = f2f1f0f1f1f0
+							f1f1f0f1f1.CuratedQueries = f1f1f0f1f1f0
 						}
 						if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.GenerationContext.Tables != nil {
-							f2f1f0f1f1f1 := []svcsdktypes.QueryGenerationTable{}
-							for _, f2f1f0f1f1f1iter := range r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.GenerationContext.Tables {
-								f2f1f0f1f1f1elem := &svcsdktypes.QueryGenerationTable{}
-								if f2f1f0f1f1f1iter.Columns != nil {
-									f2f1f0f1f1f1elemf0 := []svcsdktypes.QueryGenerationColumn{}
-									for _, f2f1f0f1f1f1elemf0iter := range f2f1f0f1f1f1iter.Columns {
-										f2f1f0f1f1f1elemf0elem := &svcsdktypes.QueryGenerationColumn{}
-										if f2f1f0f1f1f1elemf0iter.Description != nil {
-											f2f1f0f1f1f1elemf0elem.Description = f2f1f0f1f1f1elemf0iter.Description
+							f1f1f0f1f1f1 := []svcsdktypes.QueryGenerationTable{}
+							for _, f1f1f0f1f1f1iter := range r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryGenerationConfiguration.GenerationContext.Tables {
+								f1f1f0f1f1f1elem := &svcsdktypes.QueryGenerationTable{}
+								if f1f1f0f1f1f1iter.Columns != nil {
+									f1f1f0f1f1f1elemf0 := []svcsdktypes.QueryGenerationColumn{}
+									for _, f1f1f0f1f1f1elemf0iter := range f1f1f0f1f1f1iter.Columns {
+										f1f1f0f1f1f1elemf0elem := &svcsdktypes.QueryGenerationColumn{}
+										if f1f1f0f1f1f1elemf0iter.Description != nil {
+											f1f1f0f1f1f1elemf0elem.Description = f1f1f0f1f1f1elemf0iter.Description
 										}
-										if f2f1f0f1f1f1elemf0iter.Inclusion != nil {
-											f2f1f0f1f1f1elemf0elem.Inclusion = svcsdktypes.IncludeExclude(*f2f1f0f1f1f1elemf0iter.Inclusion)
+										if f1f1f0f1f1f1elemf0iter.Inclusion != nil {
+											f1f1f0f1f1f1elemf0elem.Inclusion = svcsdktypes.IncludeExclude(*f1f1f0f1f1f1elemf0iter.Inclusion)
 										}
-										if f2f1f0f1f1f1elemf0iter.Name != nil {
-											f2f1f0f1f1f1elemf0elem.Name = f2f1f0f1f1f1elemf0iter.Name
+										if f1f1f0f1f1f1elemf0iter.Name != nil {
+											f1f1f0f1f1f1elemf0elem.Name = f1f1f0f1f1f1elemf0iter.Name
 										}
-										f2f1f0f1f1f1elemf0 = append(f2f1f0f1f1f1elemf0, *f2f1f0f1f1f1elemf0elem)
+										f1f1f0f1f1f1elemf0 = append(f1f1f0f1f1f1elemf0, *f1f1f0f1f1f1elemf0elem)
 									}
-									f2f1f0f1f1f1elem.Columns = f2f1f0f1f1f1elemf0
+									f1f1f0f1f1f1elem.Columns = f1f1f0f1f1f1elemf0
 								}
-								if f2f1f0f1f1f1iter.Description != nil {
-									f2f1f0f1f1f1elem.Description = f2f1f0f1f1f1iter.Description
+								if f1f1f0f1f1f1iter.Description != nil {
+									f1f1f0f1f1f1elem.Description = f1f1f0f1f1f1iter.Description
 								}
-								if f2f1f0f1f1f1iter.Inclusion != nil {
-									f2f1f0f1f1f1elem.Inclusion = svcsdktypes.IncludeExclude(*f2f1f0f1f1f1iter.Inclusion)
+								if f1f1f0f1f1f1iter.Inclusion != nil {
+									f1f1f0f1f1f1elem.Inclusion = svcsdktypes.IncludeExclude(*f1f1f0f1f1f1iter.Inclusion)
 								}
-								if f2f1f0f1f1f1iter.Name != nil {
-									f2f1f0f1f1f1elem.Name = f2f1f0f1f1f1iter.Name
+								if f1f1f0f1f1f1iter.Name != nil {
+									f1f1f0f1f1f1elem.Name = f1f1f0f1f1f1iter.Name
 								}
-								f2f1f0f1f1f1 = append(f2f1f0f1f1f1, *f2f1f0f1f1f1elem)
+								f1f1f0f1f1f1 = append(f1f1f0f1f1f1, *f1f1f0f1f1f1elem)
 							}
-							f2f1f0f1f1.Tables = f2f1f0f1f1f1
+							f1f1f0f1f1.Tables = f1f1f0f1f1f1
 						}
-						f2f1f0f1.GenerationContext = f2f1f0f1f1
+						f1f1f0f1.GenerationContext = f1f1f0f1f1
 					}
-					f2f1f0.QueryGenerationConfiguration = f2f1f0f1
+					f1f1f0.QueryGenerationConfiguration = f1f1f0f1
 				}
 				if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.StorageConfigurations != nil {
-					f2f1f0f2 := []svcsdktypes.RedshiftQueryEngineStorageConfiguration{}
-					for _, f2f1f0f2iter := range r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.StorageConfigurations {
-						f2f1f0f2elem := &svcsdktypes.RedshiftQueryEngineStorageConfiguration{}
-						if f2f1f0f2iter.AWSDataCatalogConfiguration != nil {
-							f2f1f0f2elemf0 := &svcsdktypes.RedshiftQueryEngineAwsDataCatalogStorageConfiguration{}
-							if f2f1f0f2iter.AWSDataCatalogConfiguration.TableNames != nil {
-								f2f1f0f2elemf0.TableNames = aws.ToStringSlice(f2f1f0f2iter.AWSDataCatalogConfiguration.TableNames)
+					f1f1f0f2 := []svcsdktypes.RedshiftQueryEngineStorageConfiguration{}
+					for _, f1f1f0f2iter := range r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.StorageConfigurations {
+						f1f1f0f2elem := &svcsdktypes.RedshiftQueryEngineStorageConfiguration{}
+						if f1f1f0f2iter.AWSDataCatalogConfiguration != nil {
+							f1f1f0f2elemf0 := &svcsdktypes.RedshiftQueryEngineAwsDataCatalogStorageConfiguration{}
+							if f1f1f0f2iter.AWSDataCatalogConfiguration.TableNames != nil {
+								f1f1f0f2elemf0.TableNames = aws.ToStringSlice(f1f1f0f2iter.AWSDataCatalogConfiguration.TableNames)
 							}
-							f2f1f0f2elem.AwsDataCatalogConfiguration = f2f1f0f2elemf0
+							f1f1f0f2elem.AwsDataCatalogConfiguration = f1f1f0f2elemf0
 						}
-						if f2f1f0f2iter.RedshiftConfiguration != nil {
-							f2f1f0f2elemf1 := &svcsdktypes.RedshiftQueryEngineRedshiftStorageConfiguration{}
-							if f2f1f0f2iter.RedshiftConfiguration.DatabaseName != nil {
-								f2f1f0f2elemf1.DatabaseName = f2f1f0f2iter.RedshiftConfiguration.DatabaseName
+						if f1f1f0f2iter.RedshiftConfiguration != nil {
+							f1f1f0f2elemf1 := &svcsdktypes.RedshiftQueryEngineRedshiftStorageConfiguration{}
+							if f1f1f0f2iter.RedshiftConfiguration.DatabaseName != nil {
+								f1f1f0f2elemf1.DatabaseName = f1f1f0f2iter.RedshiftConfiguration.DatabaseName
 							}
-							f2f1f0f2elem.RedshiftConfiguration = f2f1f0f2elemf1
+							f1f1f0f2elem.RedshiftConfiguration = f1f1f0f2elemf1
 						}
-						if f2f1f0f2iter.Type != nil {
-							f2f1f0f2elem.Type = svcsdktypes.RedshiftQueryEngineStorageType(*f2f1f0f2iter.Type)
+						if f1f1f0f2iter.Type != nil {
+							f1f1f0f2elem.Type = svcsdktypes.RedshiftQueryEngineStorageType(*f1f1f0f2iter.Type)
 						}
-						f2f1f0f2 = append(f2f1f0f2, *f2f1f0f2elem)
+						f1f1f0f2 = append(f1f1f0f2, *f1f1f0f2elem)
 					}
-					f2f1f0.StorageConfigurations = f2f1f0f2
+					f1f1f0.StorageConfigurations = f1f1f0f2
 				}
-				f2f1.RedshiftConfiguration = f2f1f0
+				f1f1.RedshiftConfiguration = f1f1f0
 			}
 			if r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.Type != nil {
-				f2f1.Type = svcsdktypes.QueryEngineType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.Type)
+				f1f1.Type = svcsdktypes.QueryEngineType(*r.ko.Spec.KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.Type)
 			}
-			f2.SqlKnowledgeBaseConfiguration = f2f1
+			f1.SqlKnowledgeBaseConfiguration = f1f1
 		}
 		if r.ko.Spec.KnowledgeBaseConfiguration.Type != nil {
-			f2.Type = svcsdktypes.KnowledgeBaseType(*r.ko.Spec.KnowledgeBaseConfiguration.Type)
+			f1.Type = svcsdktypes.KnowledgeBaseType(*r.ko.Spec.KnowledgeBaseConfiguration.Type)
 		}
 		if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration != nil {
-			f2f3 := &svcsdktypes.VectorKnowledgeBaseConfiguration{}
+			f1f3 := &svcsdktypes.VectorKnowledgeBaseConfiguration{}
 			if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelARN != nil {
-				f2f3.EmbeddingModelArn = r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelARN
+				f1f3.EmbeddingModelArn = r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelARN
 			}
 			if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelConfiguration != nil {
-				f2f3f1 := &svcsdktypes.EmbeddingModelConfiguration{}
+				f1f3f1 := &svcsdktypes.EmbeddingModelConfiguration{}
 				if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelConfiguration.BedrockEmbeddingModelConfiguration != nil {
-					f2f3f1f0 := &svcsdktypes.BedrockEmbeddingModelConfiguration{}
+					f1f3f1f0 := &svcsdktypes.BedrockEmbeddingModelConfiguration{}
 					if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelConfiguration.BedrockEmbeddingModelConfiguration.Dimensions != nil {
 						dimensionsCopy0 := *r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelConfiguration.BedrockEmbeddingModelConfiguration.Dimensions
 						if dimensionsCopy0 > math.MaxInt32 || dimensionsCopy0 < math.MinInt32 {
 							return nil, fmt.Errorf("error: field dimensions is of type int32")
 						}
 						dimensionsCopy := int32(dimensionsCopy0)
-						f2f3f1f0.Dimensions = &dimensionsCopy
+						f1f3f1f0.Dimensions = &dimensionsCopy
 					}
 					if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelConfiguration.BedrockEmbeddingModelConfiguration.EmbeddingDataType != nil {
-						f2f3f1f0.EmbeddingDataType = svcsdktypes.EmbeddingDataType(*r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelConfiguration.BedrockEmbeddingModelConfiguration.EmbeddingDataType)
+						f1f3f1f0.EmbeddingDataType = svcsdktypes.EmbeddingDataType(*r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.EmbeddingModelConfiguration.BedrockEmbeddingModelConfiguration.EmbeddingDataType)
 					}
-					f2f3f1.BedrockEmbeddingModelConfiguration = f2f3f1f0
+					f1f3f1.BedrockEmbeddingModelConfiguration = f1f3f1f0
 				}
-				f2f3.EmbeddingModelConfiguration = f2f3f1
+				f1f3.EmbeddingModelConfiguration = f1f3f1
 			}
 			if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.SupplementalDataStorageConfiguration != nil {
-				f2f3f2 := &svcsdktypes.SupplementalDataStorageConfiguration{}
+				f1f3f2 := &svcsdktypes.SupplementalDataStorageConfiguration{}
 				if r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.SupplementalDataStorageConfiguration.StorageLocations != nil {
-					f2f3f2f0 := []svcsdktypes.SupplementalDataStorageLocation{}
-					for _, f2f3f2f0iter := range r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.SupplementalDataStorageConfiguration.StorageLocations {
-						f2f3f2f0elem := &svcsdktypes.SupplementalDataStorageLocation{}
-						if f2f3f2f0iter.S3Location != nil {
-							f2f3f2f0elemf0 := &svcsdktypes.S3Location{}
-							if f2f3f2f0iter.S3Location.URI != nil {
-								f2f3f2f0elemf0.Uri = f2f3f2f0iter.S3Location.URI
+					f1f3f2f0 := []svcsdktypes.SupplementalDataStorageLocation{}
+					for _, f1f3f2f0iter := range r.ko.Spec.KnowledgeBaseConfiguration.VectorKnowledgeBaseConfiguration.SupplementalDataStorageConfiguration.StorageLocations {
+						f1f3f2f0elem := &svcsdktypes.SupplementalDataStorageLocation{}
+						if f1f3f2f0iter.S3Location != nil {
+							f1f3f2f0elemf0 := &svcsdktypes.S3Location{}
+							if f1f3f2f0iter.S3Location.URI != nil {
+								f1f3f2f0elemf0.Uri = f1f3f2f0iter.S3Location.URI
 							}
-							f2f3f2f0elem.S3Location = f2f3f2f0elemf0
+							f1f3f2f0elem.S3Location = f1f3f2f0elemf0
 						}
-						if f2f3f2f0iter.Type != nil {
-							f2f3f2f0elem.Type = svcsdktypes.SupplementalDataStorageLocationType(*f2f3f2f0iter.Type)
+						if f1f3f2f0iter.Type != nil {
+							f1f3f2f0elem.Type = svcsdktypes.SupplementalDataStorageLocationType(*f1f3f2f0iter.Type)
 						}
-						f2f3f2f0 = append(f2f3f2f0, *f2f3f2f0elem)
+						f1f3f2f0 = append(f1f3f2f0, *f1f3f2f0elem)
 					}
-					f2f3f2.StorageLocations = f2f3f2f0
+					f1f3f2.StorageLocations = f1f3f2f0
 				}
-				f2f3.SupplementalDataStorageConfiguration = f2f3f2
+				f1f3.SupplementalDataStorageConfiguration = f1f3f2
 			}
-			f2.VectorKnowledgeBaseConfiguration = f2f3
+			f1.VectorKnowledgeBaseConfiguration = f1f3
 		}
-		res.KnowledgeBaseConfiguration = f2
+		res.KnowledgeBaseConfiguration = f1
 	}
 	if r.ko.Spec.Name != nil {
 		res.Name = r.ko.Spec.Name
@@ -1170,150 +1167,150 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.RoleArn = r.ko.Spec.RoleARN
 	}
 	if r.ko.Spec.StorageConfiguration != nil {
-		f5 := &svcsdktypes.StorageConfiguration{}
+		f4 := &svcsdktypes.StorageConfiguration{}
 		if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration != nil {
-			f5f0 := &svcsdktypes.MongoDbAtlasConfiguration{}
+			f4f0 := &svcsdktypes.MongoDbAtlasConfiguration{}
 			if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.CollectionName != nil {
-				f5f0.CollectionName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.CollectionName
+				f4f0.CollectionName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.CollectionName
 			}
 			if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.CredentialsSecretARN != nil {
-				f5f0.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.CredentialsSecretARN
+				f4f0.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.CredentialsSecretARN
 			}
 			if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.DatabaseName != nil {
-				f5f0.DatabaseName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.DatabaseName
+				f4f0.DatabaseName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.DatabaseName
 			}
 			if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.Endpoint != nil {
-				f5f0.Endpoint = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.Endpoint
+				f4f0.Endpoint = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.Endpoint
 			}
 			if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.EndpointServiceName != nil {
-				f5f0.EndpointServiceName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.EndpointServiceName
+				f4f0.EndpointServiceName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.EndpointServiceName
 			}
 			if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping != nil {
-				f5f0f5 := &svcsdktypes.MongoDbAtlasFieldMapping{}
+				f4f0f5 := &svcsdktypes.MongoDbAtlasFieldMapping{}
 				if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.MetadataField != nil {
-					f5f0f5.MetadataField = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.MetadataField
+					f4f0f5.MetadataField = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.MetadataField
 				}
 				if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.TextField != nil {
-					f5f0f5.TextField = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.TextField
+					f4f0f5.TextField = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.TextField
 				}
 				if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.VectorField != nil {
-					f5f0f5.VectorField = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.VectorField
+					f4f0f5.VectorField = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.FieldMapping.VectorField
 				}
-				f5f0.FieldMapping = f5f0f5
+				f4f0.FieldMapping = f4f0f5
 			}
 			if r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.VectorIndexName != nil {
-				f5f0.VectorIndexName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.VectorIndexName
+				f4f0.VectorIndexName = r.ko.Spec.StorageConfiguration.MongoDBAtlasConfiguration.VectorIndexName
 			}
-			f5.MongoDbAtlasConfiguration = f5f0
+			f4.MongoDbAtlasConfiguration = f4f0
 		}
 		if r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration != nil {
-			f5f1 := &svcsdktypes.OpenSearchServerlessConfiguration{}
+			f4f1 := &svcsdktypes.OpenSearchServerlessConfiguration{}
 			if r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.CollectionARN != nil {
-				f5f1.CollectionArn = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.CollectionARN
+				f4f1.CollectionArn = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.CollectionARN
 			}
 			if r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping != nil {
-				f5f1f1 := &svcsdktypes.OpenSearchServerlessFieldMapping{}
+				f4f1f1 := &svcsdktypes.OpenSearchServerlessFieldMapping{}
 				if r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.MetadataField != nil {
-					f5f1f1.MetadataField = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.MetadataField
+					f4f1f1.MetadataField = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.MetadataField
 				}
 				if r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.TextField != nil {
-					f5f1f1.TextField = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.TextField
+					f4f1f1.TextField = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.TextField
 				}
 				if r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.VectorField != nil {
-					f5f1f1.VectorField = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.VectorField
+					f4f1f1.VectorField = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.FieldMapping.VectorField
 				}
-				f5f1.FieldMapping = f5f1f1
+				f4f1.FieldMapping = f4f1f1
 			}
 			if r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.VectorIndexName != nil {
-				f5f1.VectorIndexName = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.VectorIndexName
+				f4f1.VectorIndexName = r.ko.Spec.StorageConfiguration.OpensearchServerlessConfiguration.VectorIndexName
 			}
-			f5.OpensearchServerlessConfiguration = f5f1
+			f4.OpensearchServerlessConfiguration = f4f1
 		}
 		if r.ko.Spec.StorageConfiguration.PineconeConfiguration != nil {
-			f5f2 := &svcsdktypes.PineconeConfiguration{}
+			f4f2 := &svcsdktypes.PineconeConfiguration{}
 			if r.ko.Spec.StorageConfiguration.PineconeConfiguration.ConnectionString != nil {
-				f5f2.ConnectionString = r.ko.Spec.StorageConfiguration.PineconeConfiguration.ConnectionString
+				f4f2.ConnectionString = r.ko.Spec.StorageConfiguration.PineconeConfiguration.ConnectionString
 			}
 			if r.ko.Spec.StorageConfiguration.PineconeConfiguration.CredentialsSecretARN != nil {
-				f5f2.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.PineconeConfiguration.CredentialsSecretARN
+				f4f2.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.PineconeConfiguration.CredentialsSecretARN
 			}
 			if r.ko.Spec.StorageConfiguration.PineconeConfiguration.FieldMapping != nil {
-				f5f2f2 := &svcsdktypes.PineconeFieldMapping{}
+				f4f2f2 := &svcsdktypes.PineconeFieldMapping{}
 				if r.ko.Spec.StorageConfiguration.PineconeConfiguration.FieldMapping.MetadataField != nil {
-					f5f2f2.MetadataField = r.ko.Spec.StorageConfiguration.PineconeConfiguration.FieldMapping.MetadataField
+					f4f2f2.MetadataField = r.ko.Spec.StorageConfiguration.PineconeConfiguration.FieldMapping.MetadataField
 				}
 				if r.ko.Spec.StorageConfiguration.PineconeConfiguration.FieldMapping.TextField != nil {
-					f5f2f2.TextField = r.ko.Spec.StorageConfiguration.PineconeConfiguration.FieldMapping.TextField
+					f4f2f2.TextField = r.ko.Spec.StorageConfiguration.PineconeConfiguration.FieldMapping.TextField
 				}
-				f5f2.FieldMapping = f5f2f2
+				f4f2.FieldMapping = f4f2f2
 			}
 			if r.ko.Spec.StorageConfiguration.PineconeConfiguration.Namespace != nil {
-				f5f2.Namespace = r.ko.Spec.StorageConfiguration.PineconeConfiguration.Namespace
+				f4f2.Namespace = r.ko.Spec.StorageConfiguration.PineconeConfiguration.Namespace
 			}
-			f5.PineconeConfiguration = f5f2
+			f4.PineconeConfiguration = f4f2
 		}
 		if r.ko.Spec.StorageConfiguration.RdsConfiguration != nil {
-			f5f3 := &svcsdktypes.RdsConfiguration{}
+			f4f3 := &svcsdktypes.RdsConfiguration{}
 			if r.ko.Spec.StorageConfiguration.RdsConfiguration.CredentialsSecretARN != nil {
-				f5f3.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.RdsConfiguration.CredentialsSecretARN
+				f4f3.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.RdsConfiguration.CredentialsSecretARN
 			}
 			if r.ko.Spec.StorageConfiguration.RdsConfiguration.DatabaseName != nil {
-				f5f3.DatabaseName = r.ko.Spec.StorageConfiguration.RdsConfiguration.DatabaseName
+				f4f3.DatabaseName = r.ko.Spec.StorageConfiguration.RdsConfiguration.DatabaseName
 			}
 			if r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping != nil {
-				f5f3f2 := &svcsdktypes.RdsFieldMapping{}
+				f4f3f2 := &svcsdktypes.RdsFieldMapping{}
 				if r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.MetadataField != nil {
-					f5f3f2.MetadataField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.MetadataField
+					f4f3f2.MetadataField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.MetadataField
 				}
 				if r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.PrimaryKeyField != nil {
-					f5f3f2.PrimaryKeyField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.PrimaryKeyField
+					f4f3f2.PrimaryKeyField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.PrimaryKeyField
 				}
 				if r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.TextField != nil {
-					f5f3f2.TextField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.TextField
+					f4f3f2.TextField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.TextField
 				}
 				if r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.VectorField != nil {
-					f5f3f2.VectorField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.VectorField
+					f4f3f2.VectorField = r.ko.Spec.StorageConfiguration.RdsConfiguration.FieldMapping.VectorField
 				}
-				f5f3.FieldMapping = f5f3f2
+				f4f3.FieldMapping = f4f3f2
 			}
 			if r.ko.Spec.StorageConfiguration.RdsConfiguration.ResourceARN != nil {
-				f5f3.ResourceArn = r.ko.Spec.StorageConfiguration.RdsConfiguration.ResourceARN
+				f4f3.ResourceArn = r.ko.Spec.StorageConfiguration.RdsConfiguration.ResourceARN
 			}
 			if r.ko.Spec.StorageConfiguration.RdsConfiguration.TableName != nil {
-				f5f3.TableName = r.ko.Spec.StorageConfiguration.RdsConfiguration.TableName
+				f4f3.TableName = r.ko.Spec.StorageConfiguration.RdsConfiguration.TableName
 			}
-			f5.RdsConfiguration = f5f3
+			f4.RdsConfiguration = f4f3
 		}
 		if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration != nil {
-			f5f4 := &svcsdktypes.RedisEnterpriseCloudConfiguration{}
+			f4f4 := &svcsdktypes.RedisEnterpriseCloudConfiguration{}
 			if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.CredentialsSecretARN != nil {
-				f5f4.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.CredentialsSecretARN
+				f4f4.CredentialsSecretArn = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.CredentialsSecretARN
 			}
 			if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.Endpoint != nil {
-				f5f4.Endpoint = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.Endpoint
+				f4f4.Endpoint = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.Endpoint
 			}
 			if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping != nil {
-				f5f4f2 := &svcsdktypes.RedisEnterpriseCloudFieldMapping{}
+				f4f4f2 := &svcsdktypes.RedisEnterpriseCloudFieldMapping{}
 				if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.MetadataField != nil {
-					f5f4f2.MetadataField = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.MetadataField
+					f4f4f2.MetadataField = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.MetadataField
 				}
 				if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.TextField != nil {
-					f5f4f2.TextField = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.TextField
+					f4f4f2.TextField = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.TextField
 				}
 				if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.VectorField != nil {
-					f5f4f2.VectorField = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.VectorField
+					f4f4f2.VectorField = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.FieldMapping.VectorField
 				}
-				f5f4.FieldMapping = f5f4f2
+				f4f4.FieldMapping = f4f4f2
 			}
 			if r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.VectorIndexName != nil {
-				f5f4.VectorIndexName = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.VectorIndexName
+				f4f4.VectorIndexName = r.ko.Spec.StorageConfiguration.RedisEnterpriseCloudConfiguration.VectorIndexName
 			}
-			f5.RedisEnterpriseCloudConfiguration = f5f4
+			f4.RedisEnterpriseCloudConfiguration = f4f4
 		}
 		if r.ko.Spec.StorageConfiguration.Type != nil {
-			f5.Type = svcsdktypes.KnowledgeBaseStorageType(*r.ko.Spec.StorageConfiguration.Type)
+			f4.Type = svcsdktypes.KnowledgeBaseStorageType(*r.ko.Spec.StorageConfiguration.Type)
 		}
-		res.StorageConfiguration = f5
+		res.StorageConfiguration = f4
 	}
 	if r.ko.Spec.Tags != nil {
 		res.Tags = aws.ToStringMap(r.ko.Spec.Tags)
@@ -2271,8 +2268,7 @@ func (rm *resourceManager) terminalAWSError(err error) bool {
 		return false
 	}
 	switch terminalErr.ErrorCode() {
-	case "ResourceNotFoundException",
-		"ConflictException":
+	case "ValidationException":
 		return true
 	default:
 		return false

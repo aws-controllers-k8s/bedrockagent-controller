@@ -25,13 +25,6 @@ import (
 // Contains information about a knowledge base.
 type KnowledgeBaseSpec struct {
 
-	// A unique, case-sensitive identifier to ensure that the API request completes
-	// no more than one time. If this token matches a previous request, Amazon Bedrock
-	// ignores the request, but does not return an error. For more information,
-	// see Ensuring idempotency (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html).
-	//
-	// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}$`
-	ClientToken *string `json:"clientToken,omitempty"`
 	// A description of the knowledge base.
 	Description *string `json:"description,omitempty"`
 	// Contains details about the embeddings model used for the knowledge base.

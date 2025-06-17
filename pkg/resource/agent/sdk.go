@@ -1088,7 +1088,7 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy

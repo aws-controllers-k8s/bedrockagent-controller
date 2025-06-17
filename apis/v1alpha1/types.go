@@ -401,7 +401,7 @@ type KnowledgeBaseConfiguration struct {
 	// a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
 	// in the Amazon Bedrock User Guide.
 	SQLKnowledgeBaseConfiguration *SQLKnowledgeBaseConfiguration `json:"sqlKnowledgeBaseConfiguration,omitempty"`
-	Type                          *string                        `json:"type_,omitempty"`
+	Type                          *string                        `json:"type,omitempty"`
 	// Contains details about the model used to create vector embeddings for the
 	// knowledge base.
 	VectorKnowledgeBaseConfiguration *VectorKnowledgeBaseConfiguration `json:"vectorKnowledgeBaseConfiguration,omitempty"`
@@ -706,7 +706,7 @@ type RedshiftConfiguration struct {
 // don't need to include another field.
 type RedshiftProvisionedAuthConfiguration struct {
 	DatabaseUser              *string `json:"databaseUser,omitempty"`
-	Type                      *string `json:"type_,omitempty"`
+	Type                      *string `json:"type,omitempty"`
 	UsernamePasswordSecretARN *string `json:"usernamePasswordSecretARN,omitempty"`
 }
 
@@ -735,7 +735,7 @@ type RedshiftQueryEngineConfiguration struct {
 	ProvisionedConfiguration *RedshiftProvisionedConfiguration `json:"provisionedConfiguration,omitempty"`
 	// Contains configurations for authentication to Amazon Redshift Serverless.
 	ServerlessConfiguration *RedshiftServerlessConfiguration `json:"serverlessConfiguration,omitempty"`
-	Type                    *string                          `json:"type_,omitempty"`
+	Type                    *string                          `json:"type,omitempty"`
 }
 
 // Contains configurations for storage in Amazon Redshift.
@@ -761,7 +761,7 @@ type RedshiftQueryEngineStorageConfiguration struct {
 // field. If you specify IAM authentication, you don't need to include another
 // field.
 type RedshiftServerlessAuthConfiguration struct {
-	Type                      *string `json:"type_,omitempty"`
+	Type                      *string `json:"type,omitempty"`
 	UsernamePasswordSecretARN *string `json:"usernamePasswordSecretARN,omitempty"`
 }
 
@@ -797,7 +797,7 @@ type SQLKnowledgeBaseConfiguration struct {
 	// see Build a knowledge base by connecting to a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
 	// in the Amazon Bedrock User Guide.
 	RedshiftConfiguration *RedshiftConfiguration `json:"redshiftConfiguration,omitempty"`
-	Type                  *string                `json:"type_,omitempty"`
+	Type                  *string                `json:"type,omitempty"`
 }
 
 // The endpoint information to connect to your Salesforce data source.
@@ -840,7 +840,7 @@ type StorageConfiguration struct {
 	// Redis Enterprise Cloud. For more information, see Create a vector index in
 	// Redis Enterprise Cloud (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
 	RedisEnterpriseCloudConfiguration *RedisEnterpriseCloudConfiguration `json:"redisEnterpriseCloudConfiguration,omitempty"`
-	Type                              *string                            `json:"type_,omitempty"`
+	Type                              *string                            `json:"type,omitempty"`
 }
 
 // Specifies configurations for the storage location of the images extracted
