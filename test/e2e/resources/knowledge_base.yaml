@@ -1,0 +1,23 @@
+apiVersion: bedrockagent.services.k8s.aws/v1alpha1
+kind: KnowledgeBase
+metadata:
+  name: $KNOWLEDGE_BASE_NAME
+spec:
+  tags:
+    $TAG_KEY_1: $TAG_VALUE_1
+  name: $KNOWLEDGE_BASE_NAME
+  description: $KNOWLEDGE_BASE_DESCRIPTION
+  roleARN: $KNOWLEDGE_BASE_ROLE_ARN
+  knowledgeBaseConfiguration:
+    type: VECTOR
+    vectorKnowledgeBaseConfiguration:
+      embeddingModelARN: $EMBEDDING_MODEL_ARN
+  storageConfiguration:
+    type: OPENSEARCH_SERVERLESS
+    opensearchServerlessConfiguration:
+      collectionARN: $OPENSEARCH_COLLECTION_ARN
+      vectorIndexName: $VECTOR_INDEX_NAME
+      fieldMapping:
+        textField: text
+        vectorField: vector
+        metadataField: metadata
