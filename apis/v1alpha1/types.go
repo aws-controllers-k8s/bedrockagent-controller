@@ -205,15 +205,34 @@ type Agent_SDK struct {
 	UpdatedAt                   *metav1.Time                 `json:"updatedAt,omitempty"`
 }
 
+// The vector configuration details for the Bedrock embeddings model.
+type BedrockEmbeddingModelConfiguration struct {
+	Dimensions *int64 `json:"dimensions,omitempty"`
+	// Bedrock models embedding data type. Can be either float32 or binary.
+	EmbeddingDataType *string `json:"embeddingDataType,omitempty"`
+}
+
 // Contains information about content defined inline in bytes.
 type ByteContentDoc struct {
 	MimeType *string `json:"mimeType,omitempty"`
+}
+
+// The endpoint information to connect to your Confluence data source.
+type ConfluenceSourceConfiguration struct {
+	CredentialsSecretARN *string `json:"credentialsSecretARN,omitempty"`
 }
 
 // Contains the content for the message you pass to, or receive from a model.
 // For more information, see Create a prompt using Prompt management (https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
 type ContentBlock struct {
 	Text *string `json:"text,omitempty"`
+}
+
+// Contains configurations for a query, each of which defines information about
+// example queries to help the query engine generate appropriate SQL queries.
+type CuratedQuery struct {
+	NATuralLanguage *string `json:"naturalLanguage,omitempty"`
+	SQL             *string `json:"sql,omitempty"`
 }
 
 // Contains information about the identifier of the document to ingest into
@@ -247,6 +266,18 @@ type DataSourceSummary struct {
 	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
 	Name            *string      `json:"name,omitempty"`
 	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains information that identifies the document.
+type DocumentIdentifier struct {
+	// An Amazon S3 location.
+	S3 *S3Location `json:"s3,omitempty"`
+}
+
+// The configuration details for the embeddings model.
+type EmbeddingModelConfiguration struct {
+	// The vector configuration details for the Bedrock embeddings model.
+	BedrockEmbeddingModelConfiguration *BedrockEmbeddingModelConfiguration `json:"bedrockEmbeddingModelConfiguration,omitempty"`
 }
 
 // Contains information about a version that the alias maps to.
@@ -347,14 +378,33 @@ type IngestionJobSummary struct {
 	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
 }
 
-// Contains information about a knowledge base.
-type KnowledgeBase struct {
-	CreatedAt       *metav1.Time `json:"createdAt,omitempty"`
-	Description     *string      `json:"description,omitempty"`
-	FailureReasons  []*string    `json:"failureReasons,omitempty"`
-	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
-	Name            *string      `json:"name,omitempty"`
-	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+// A location for storing content from data sources temporarily as it is processed
+// by custom components in the ingestion pipeline.
+type IntermediateStorage struct {
+	// An Amazon S3 location.
+	S3Location *S3Location `json:"s3Location,omitempty"`
+}
+
+// Settings for an Amazon Kendra knowledge base.
+type KendraKnowledgeBaseConfiguration struct {
+	KendraIndexARN *string `json:"kendraIndexARN,omitempty"`
+}
+
+// Contains details about the vector embeddings configuration of the knowledge
+// base.
+type KnowledgeBaseConfiguration struct {
+	// Settings for an Amazon Kendra knowledge base.
+	KendraKnowledgeBaseConfiguration *KendraKnowledgeBaseConfiguration `json:"kendraKnowledgeBaseConfiguration,omitempty"`
+	// Contains configurations for a knowledge base connected to an SQL database.
+	// Specify the SQL database type in the type field and include the corresponding
+	// field. For more information, see Build a knowledge base by connecting to
+	// a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+	// in the Amazon Bedrock User Guide.
+	SQLKnowledgeBaseConfiguration *SQLKnowledgeBaseConfiguration `json:"sqlKnowledgeBaseConfiguration,omitempty"`
+	Type                          *string                        `json:"type,omitempty"`
+	// Contains details about the model used to create vector embeddings for the
+	// knowledge base.
+	VectorKnowledgeBaseConfiguration *VectorKnowledgeBaseConfiguration `json:"vectorKnowledgeBaseConfiguration,omitempty"`
 }
 
 // Contains the details for a document that was ingested or deleted.
@@ -380,7 +430,26 @@ type KnowledgeBaseSummary struct {
 	Description     *string      `json:"description,omitempty"`
 	KnowledgeBaseID *string      `json:"knowledgeBaseID,omitempty"`
 	Name            *string      `json:"name,omitempty"`
+	Status          *string      `json:"status,omitempty"`
 	UpdatedAt       *metav1.Time `json:"updatedAt,omitempty"`
+}
+
+// Contains information about a knowledge base.
+type KnowledgeBase_SDK struct {
+	CreatedAt        *metav1.Time `json:"createdAt,omitempty"`
+	Description      *string      `json:"description,omitempty"`
+	FailureReasons   []*string    `json:"failureReasons,omitempty"`
+	KnowledgeBaseARN *string      `json:"knowledgeBaseARN,omitempty"`
+	// Contains details about the vector embeddings configuration of the knowledge
+	// base.
+	KnowledgeBaseConfiguration *KnowledgeBaseConfiguration `json:"knowledgeBaseConfiguration,omitempty"`
+	KnowledgeBaseID            *string                     `json:"knowledgeBaseID,omitempty"`
+	Name                       *string                     `json:"name,omitempty"`
+	RoleARN                    *string                     `json:"roleARN,omitempty"`
+	Status                     *string                     `json:"status,omitempty"`
+	// Contains the storage configuration of the knowledge base.
+	StorageConfiguration *StorageConfiguration `json:"storageConfiguration,omitempty"`
+	UpdatedAt            *metav1.Time          `json:"updatedAt,omitempty"`
 }
 
 // Contains configurations for a Lambda function node in the flow. You specify
@@ -406,6 +475,47 @@ type MetadataAttributeValue struct {
 	BooleanValue *bool `json:"booleanValue,omitempty"`
 }
 
+// Contains details about the storage configuration of the knowledge base in
+// MongoDB Atlas.
+type MongoDBAtlasConfiguration struct {
+	CollectionName       *string `json:"collectionName,omitempty"`
+	CredentialsSecretARN *string `json:"credentialsSecretARN,omitempty"`
+	DatabaseName         *string `json:"databaseName,omitempty"`
+	Endpoint             *string `json:"endpoint,omitempty"`
+	EndpointServiceName  *string `json:"endpointServiceName,omitempty"`
+	// Contains the names of the fields to which to map information about the vector
+	// store.
+	FieldMapping    *MongoDBAtlasFieldMapping `json:"fieldMapping,omitempty"`
+	VectorIndexName *string                   `json:"vectorIndexName,omitempty"`
+}
+
+// Contains the names of the fields to which to map information about the vector
+// store.
+type MongoDBAtlasFieldMapping struct {
+	MetadataField *string `json:"metadataField,omitempty"`
+	TextField     *string `json:"textField,omitempty"`
+	VectorField   *string `json:"vectorField,omitempty"`
+}
+
+// Contains details about the storage configuration of the knowledge base in
+// Amazon OpenSearch Service. For more information, see Create a vector index
+// in Amazon OpenSearch Service (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
+type OpenSearchServerlessConfiguration struct {
+	CollectionARN *string `json:"collectionARN,omitempty"`
+	// Contains the names of the fields to which to map information about the vector
+	// store.
+	FieldMapping    *OpenSearchServerlessFieldMapping `json:"fieldMapping,omitempty"`
+	VectorIndexName *string                           `json:"vectorIndexName,omitempty"`
+}
+
+// Contains the names of the fields to which to map information about the vector
+// store.
+type OpenSearchServerlessFieldMapping struct {
+	MetadataField *string `json:"metadataField,omitempty"`
+	TextField     *string `json:"textField,omitempty"`
+	VectorField   *string `json:"vectorField,omitempty"`
+}
+
 // Contains details about the Lambda function containing the orchestration logic
 // carried out upon invoking the custom orchestration.
 type OrchestrationExecutor struct {
@@ -427,6 +537,24 @@ type OrchestrationExecutor struct {
 //   - GetAgentActionGroup response (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax)
 type ParameterDetail struct {
 	Required *bool `json:"required,omitempty"`
+}
+
+// Contains details about the storage configuration of the knowledge base in
+// Pinecone. For more information, see Create a vector index in Pinecone (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html).
+type PineconeConfiguration struct {
+	ConnectionString     *string `json:"connectionString,omitempty"`
+	CredentialsSecretARN *string `json:"credentialsSecretARN,omitempty"`
+	// Contains the names of the fields to which to map information about the vector
+	// store.
+	FieldMapping *PineconeFieldMapping `json:"fieldMapping,omitempty"`
+	Namespace    *string               `json:"namespace,omitempty"`
+}
+
+// Contains the names of the fields to which to map information about the vector
+// store.
+type PineconeFieldMapping struct {
+	MetadataField *string `json:"metadataField,omitempty"`
+	TextField     *string `json:"textField,omitempty"`
 }
 
 // Contains configurations to override a prompt template in one part of an agent
@@ -482,12 +610,199 @@ type PromptSummary struct {
 	Version   *string      `json:"version,omitempty"`
 }
 
+// Contains information about a column in the current table for the query engine
+// to consider.
+type QueryGenerationColumn struct {
+	Description *string `json:"description,omitempty"`
+	Inclusion   *string `json:"inclusion,omitempty"`
+	Name        *string `json:"name,omitempty"`
+}
+
+// Contains configurations for query generation. For more information, see Build
+// a knowledge base by connecting to a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+// in the Amazon Bedrock User Guide..
+type QueryGenerationConfiguration struct {
+	ExecutionTimeoutSeconds *int64 `json:"executionTimeoutSeconds,omitempty"`
+	// >Contains configurations for context to use during query generation.
+	GenerationContext *QueryGenerationContext `json:"generationContext,omitempty"`
+}
+
+// >Contains configurations for context to use during query generation.
+type QueryGenerationContext struct {
+	CuratedQueries []*CuratedQuery         `json:"curatedQueries,omitempty"`
+	Tables         []*QueryGenerationTable `json:"tables,omitempty"`
+}
+
+// Contains information about a table for the query engine to consider.
+type QueryGenerationTable struct {
+	Columns     []*QueryGenerationColumn `json:"columns,omitempty"`
+	Description *string                  `json:"description,omitempty"`
+	Inclusion   *string                  `json:"inclusion,omitempty"`
+	Name        *string                  `json:"name,omitempty"`
+}
+
+// Contains details about the storage configuration of the knowledge base in
+// Amazon RDS. For more information, see Create a vector index in Amazon RDS
+// (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html).
+type RdsConfiguration struct {
+	CredentialsSecretARN *string `json:"credentialsSecretARN,omitempty"`
+	DatabaseName         *string `json:"databaseName,omitempty"`
+	// Contains the names of the fields to which to map information about the vector
+	// store.
+	FieldMapping *RdsFieldMapping `json:"fieldMapping,omitempty"`
+	ResourceARN  *string          `json:"resourceARN,omitempty"`
+	TableName    *string          `json:"tableName,omitempty"`
+}
+
+// Contains the names of the fields to which to map information about the vector
+// store.
+type RdsFieldMapping struct {
+	MetadataField   *string `json:"metadataField,omitempty"`
+	PrimaryKeyField *string `json:"primaryKeyField,omitempty"`
+	TextField       *string `json:"textField,omitempty"`
+	VectorField     *string `json:"vectorField,omitempty"`
+}
+
+// Contains details about the storage configuration of the knowledge base in
+// Redis Enterprise Cloud. For more information, see Create a vector index in
+// Redis Enterprise Cloud (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
+type RedisEnterpriseCloudConfiguration struct {
+	CredentialsSecretARN *string `json:"credentialsSecretARN,omitempty"`
+	Endpoint             *string `json:"endpoint,omitempty"`
+	// Contains the names of the fields to which to map information about the vector
+	// store.
+	FieldMapping    *RedisEnterpriseCloudFieldMapping `json:"fieldMapping,omitempty"`
+	VectorIndexName *string                           `json:"vectorIndexName,omitempty"`
+}
+
+// Contains the names of the fields to which to map information about the vector
+// store.
+type RedisEnterpriseCloudFieldMapping struct {
+	MetadataField *string `json:"metadataField,omitempty"`
+	TextField     *string `json:"textField,omitempty"`
+	VectorField   *string `json:"vectorField,omitempty"`
+}
+
+// Contains configurations for an Amazon Redshift database. For more information,
+// see Build a knowledge base by connecting to a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+// in the Amazon Bedrock User Guide.
+type RedshiftConfiguration struct {
+	// Contains configurations for an Amazon Redshift query engine. Specify the
+	// type of query engine in type and include the corresponding field. For more
+	// information, see Build a knowledge base by connecting to a structured data
+	// source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+	// in the Amazon Bedrock User Guide.
+	QueryEngineConfiguration *RedshiftQueryEngineConfiguration `json:"queryEngineConfiguration,omitempty"`
+	// Contains configurations for query generation. For more information, see Build
+	// a knowledge base by connecting to a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+	// in the Amazon Bedrock User Guide..
+	QueryGenerationConfiguration *QueryGenerationConfiguration              `json:"queryGenerationConfiguration,omitempty"`
+	StorageConfigurations        []*RedshiftQueryEngineStorageConfiguration `json:"storageConfigurations,omitempty"`
+}
+
 // Contains configurations for authentication to an Amazon Redshift provisioned
 // data warehouse. Specify the type of authentication to use in the type field
 // and include the corresponding field. If you specify IAM authentication, you
 // don't need to include another field.
 type RedshiftProvisionedAuthConfiguration struct {
-	DatabaseUser *string `json:"databaseUser,omitempty"`
+	DatabaseUser              *string `json:"databaseUser,omitempty"`
+	Type                      *string `json:"type,omitempty"`
+	UsernamePasswordSecretARN *string `json:"usernamePasswordSecretARN,omitempty"`
+}
+
+// Contains configurations for a provisioned Amazon Redshift query engine.
+type RedshiftProvisionedConfiguration struct {
+	// Contains configurations for authentication to an Amazon Redshift provisioned
+	// data warehouse. Specify the type of authentication to use in the type field
+	// and include the corresponding field. If you specify IAM authentication, you
+	// don't need to include another field.
+	AuthConfiguration *RedshiftProvisionedAuthConfiguration `json:"authConfiguration,omitempty"`
+	ClusterIdentifier *string                               `json:"clusterIdentifier,omitempty"`
+}
+
+// Contains configurations for storage in Glue Data Catalog.
+type RedshiftQueryEngineAWSDataCatalogStorageConfiguration struct {
+	TableNames []*string `json:"tableNames,omitempty"`
+}
+
+// Contains configurations for an Amazon Redshift query engine. Specify the
+// type of query engine in type and include the corresponding field. For more
+// information, see Build a knowledge base by connecting to a structured data
+// source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+// in the Amazon Bedrock User Guide.
+type RedshiftQueryEngineConfiguration struct {
+	// Contains configurations for a provisioned Amazon Redshift query engine.
+	ProvisionedConfiguration *RedshiftProvisionedConfiguration `json:"provisionedConfiguration,omitempty"`
+	// Contains configurations for authentication to Amazon Redshift Serverless.
+	ServerlessConfiguration *RedshiftServerlessConfiguration `json:"serverlessConfiguration,omitempty"`
+	Type                    *string                          `json:"type,omitempty"`
+}
+
+// Contains configurations for storage in Amazon Redshift.
+type RedshiftQueryEngineRedshiftStorageConfiguration struct {
+	DatabaseName *string `json:"databaseName,omitempty"`
+}
+
+// Contains configurations for Amazon Redshift data storage. Specify the data
+// storage service to use in the type field and include the corresponding field.
+// For more information, see Build a knowledge base by connecting to a structured
+// data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+// in the Amazon Bedrock User Guide.
+type RedshiftQueryEngineStorageConfiguration struct {
+	// Contains configurations for storage in Glue Data Catalog.
+	AWSDataCatalogConfiguration *RedshiftQueryEngineAWSDataCatalogStorageConfiguration `json:"awsDataCatalogConfiguration,omitempty"`
+	// Contains configurations for storage in Amazon Redshift.
+	RedshiftConfiguration *RedshiftQueryEngineRedshiftStorageConfiguration `json:"redshiftConfiguration,omitempty"`
+	Type                  *string                                          `json:"type_,omitempty"`
+}
+
+// Specifies configurations for authentication to a Redshift Serverless. Specify
+// the type of authentication to use in the type field and include the corresponding
+// field. If you specify IAM authentication, you don't need to include another
+// field.
+type RedshiftServerlessAuthConfiguration struct {
+	Type                      *string `json:"type,omitempty"`
+	UsernamePasswordSecretARN *string `json:"usernamePasswordSecretARN,omitempty"`
+}
+
+// Contains configurations for authentication to Amazon Redshift Serverless.
+type RedshiftServerlessConfiguration struct {
+	// Specifies configurations for authentication to a Redshift Serverless. Specify
+	// the type of authentication to use in the type field and include the corresponding
+	// field. If you specify IAM authentication, you don't need to include another
+	// field.
+	AuthConfiguration *RedshiftServerlessAuthConfiguration `json:"authConfiguration,omitempty"`
+	WorkgroupARN      *string                              `json:"workgroupARN,omitempty"`
+}
+
+// Contains information about the content to ingest into a knowledge base connected
+// to an Amazon S3 data source.
+type S3Content struct {
+	// An Amazon S3 location.
+	S3Location *S3Location `json:"s3Location,omitempty"`
+}
+
+// An Amazon S3 location.
+type S3Location struct {
+	URI *string `json:"uri,omitempty"`
+}
+
+// Contains configurations for a knowledge base connected to an SQL database.
+// Specify the SQL database type in the type field and include the corresponding
+// field. For more information, see Build a knowledge base by connecting to
+// a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+// in the Amazon Bedrock User Guide.
+type SQLKnowledgeBaseConfiguration struct {
+	// Contains configurations for an Amazon Redshift database. For more information,
+	// see Build a knowledge base by connecting to a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+	// in the Amazon Bedrock User Guide.
+	RedshiftConfiguration *RedshiftConfiguration `json:"redshiftConfiguration,omitempty"`
+	Type                  *string                `json:"type,omitempty"`
+}
+
+// The endpoint information to connect to your Salesforce data source.
+type SalesforceSourceConfiguration struct {
+	CredentialsSecretARN *string `json:"credentialsSecretARN,omitempty"`
 }
 
 // Contains the configuration for server-side encryption.
@@ -500,7 +815,62 @@ type SessionSummaryConfiguration struct {
 	MaxRecentSessions *int64 `json:"maxRecentSessions,omitempty"`
 }
 
+// The endpoint information to connect to your SharePoint data source.
+type SharePointSourceConfiguration struct {
+	CredentialsSecretARN *string `json:"credentialsSecretARN,omitempty"`
+}
+
+// Contains the storage configuration of the knowledge base.
+type StorageConfiguration struct {
+	// Contains details about the storage configuration of the knowledge base in
+	// MongoDB Atlas.
+	MongoDBAtlasConfiguration *MongoDBAtlasConfiguration `json:"mongoDBAtlasConfiguration,omitempty"`
+	// Contains details about the storage configuration of the knowledge base in
+	// Amazon OpenSearch Service. For more information, see Create a vector index
+	// in Amazon OpenSearch Service (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
+	OpensearchServerlessConfiguration *OpenSearchServerlessConfiguration `json:"opensearchServerlessConfiguration,omitempty"`
+	// Contains details about the storage configuration of the knowledge base in
+	// Pinecone. For more information, see Create a vector index in Pinecone (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html).
+	PineconeConfiguration *PineconeConfiguration `json:"pineconeConfiguration,omitempty"`
+	// Contains details about the storage configuration of the knowledge base in
+	// Amazon RDS. For more information, see Create a vector index in Amazon RDS
+	// (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html).
+	RdsConfiguration *RdsConfiguration `json:"rdsConfiguration,omitempty"`
+	// Contains details about the storage configuration of the knowledge base in
+	// Redis Enterprise Cloud. For more information, see Create a vector index in
+	// Redis Enterprise Cloud (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
+	RedisEnterpriseCloudConfiguration *RedisEnterpriseCloudConfiguration `json:"redisEnterpriseCloudConfiguration,omitempty"`
+	Type                              *string                            `json:"type,omitempty"`
+}
+
+// Specifies configurations for the storage location of the images extracted
+// from multimodal documents in your data source. These images can be retrieved
+// and returned to the end user.
+type SupplementalDataStorageConfiguration struct {
+	StorageLocations []*SupplementalDataStorageLocation `json:"storageLocations,omitempty"`
+}
+
+// Contains information about a storage location for images extracted from multimodal
+// documents in your data source.
+type SupplementalDataStorageLocation struct {
+	// An Amazon S3 location.
+	S3Location *S3Location `json:"s3Location,omitempty"`
+	Type       *string     `json:"type_,omitempty"`
+}
+
 // A Lambda function that processes documents.
 type TransformationLambdaConfiguration struct {
 	LambdaARN *string `json:"lambdaARN,omitempty"`
+}
+
+// Contains details about the model used to create vector embeddings for the
+// knowledge base.
+type VectorKnowledgeBaseConfiguration struct {
+	EmbeddingModelARN *string `json:"embeddingModelARN,omitempty"`
+	// The configuration details for the embeddings model.
+	EmbeddingModelConfiguration *EmbeddingModelConfiguration `json:"embeddingModelConfiguration,omitempty"`
+	// Specifies configurations for the storage location of the images extracted
+	// from multimodal documents in your data source. These images can be retrieved
+	// and returned to the end user.
+	SupplementalDataStorageConfiguration *SupplementalDataStorageConfiguration `json:"supplementalDataStorageConfiguration,omitempty"`
 }

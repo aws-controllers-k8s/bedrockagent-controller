@@ -24,7 +24,8 @@ def service_bootstrap() -> Resources:
     logging.getLogger().setLevel(logging.INFO)
 
     resources = BootstrapResources(
-       AgentRole=Role("agent-role", "bedrock.amazonaws.com", managed_policies=["arn:aws:iam::aws:policy/AmazonBedrockReadOnly"])
+       AgentRole=Role("agent-role", "bedrock.amazonaws.com", managed_policies=["arn:aws:iam::aws:policy/AmazonBedrockReadOnly"]),
+       KnowledgeBaseRole=Role("knowledge-base-role", "bedrock.amazonaws.com", managed_policies=["arn:aws:iam::aws:policy/AmazonBedrockFullAccess"])
     )
 
     try:

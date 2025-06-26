@@ -9,13 +9,14 @@ ignore:
       - Flow
       - FlowAlias
       - FlowVersion
-      - KnowledgeBase
+      #- KnowledgeBase
       - Prompt
       - PromptVersion
   field_paths:
     # Uses unhandled type 'smithy.api#document'
     - "PromptOverrideConfiguration.PromptConfigurations.PromptConfiguration.AdditionalModelRequestFields"
     - CreateAgentInput.ClientToken
+    - CreateKnowledgeBaseInput.ClientToken
 
 resources:
   Agent:
@@ -36,7 +37,7 @@ resources:
         from:
           operation: TagResource
           path: Tags
-          
+
     synced:
       when:
         - path: Status.AgentStatus
@@ -54,4 +55,40 @@ resources:
       sdk_update_pre_build_request:
         template_path: hooks/agent/sdk_update_pre_build_request.go.tpl
 
-
+  KnowledgeBase:
+    synced:
+      when:
+        - path: Status.Status
+          in:
+            - ACTIVE
+    fields:
+      Name:
+        is_required: true
+      RoleArn:
+        is_required: true
+      KnowledgeBaseConfiguration:
+        is_required: true
+      KnowledgeBaseConfiguration.Type:
+        go_tag: json:"type,omitempty"
+      KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.Type:
+        go_tag: json:"type,omitempty"
+      KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.Type:
+        go_tag: json:"type,omitempty"
+      KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ProvisionedConfiguration.AuthConfiguration.Type:
+        go_tag: json:"type,omitempty"
+      KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.QueryEngineConfiguration.ServerlessConfiguration.AuthConfiguration.Type:
+        go_tag: json:"type,omitempty"
+#      KnowledgeBaseConfiguration.SQLKnowledgeBaseConfiguration.RedshiftConfiguration.StorageConfigurations:
+#        type: "[]*RedshiftQueryEngineStorageConfiguration"
+#        go_tag: json:"type,omitempty"
+      StorageConfiguration.Type:
+        go_tag: json:"type,omitempty"
+      StorageConfiguration:
+        is_required: true
+      Tags:
+        from:
+          operation: TagResource
+          path: Tags
+    exceptions:
+      terminal_codes:
+        - ValidationException

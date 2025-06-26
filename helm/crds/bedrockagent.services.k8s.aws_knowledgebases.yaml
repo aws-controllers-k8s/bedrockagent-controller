@@ -1,0 +1,530 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.2
+  name: knowledgebases.bedrockagent.services.k8s.aws
+spec:
+  group: bedrockagent.services.k8s.aws
+  names:
+    kind: KnowledgeBase
+    listKind: KnowledgeBaseList
+    plural: knowledgebases
+    singular: knowledgebase
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: KnowledgeBase is the Schema for the KnowledgeBases API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: |-
+              KnowledgeBaseSpec defines the desired state of KnowledgeBase.
+
+              Contains information about a knowledge base.
+            properties:
+              description:
+                description: A description of the knowledge base.
+                type: string
+              knowledgeBaseConfiguration:
+                description: Contains details about the embeddings model used for
+                  the knowledge base.
+                properties:
+                  kendraKnowledgeBaseConfiguration:
+                    description: Settings for an Amazon Kendra knowledge base.
+                    properties:
+                      kendraIndexARN:
+                        type: string
+                    type: object
+                  sqlKnowledgeBaseConfiguration:
+                    description: |-
+                      Contains configurations for a knowledge base connected to an SQL database.
+                      Specify the SQL database type in the type field and include the corresponding
+                      field. For more information, see Build a knowledge base by connecting to
+                      a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+                      in the Amazon Bedrock User Guide.
+                    properties:
+                      redshiftConfiguration:
+                        description: |-
+                          Contains configurations for an Amazon Redshift database. For more information,
+                          see Build a knowledge base by connecting to a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+                          in the Amazon Bedrock User Guide.
+                        properties:
+                          queryEngineConfiguration:
+                            description: |-
+                              Contains configurations for an Amazon Redshift query engine. Specify the
+                              type of query engine in type and include the corresponding field. For more
+                              information, see Build a knowledge base by connecting to a structured data
+                              source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+                              in the Amazon Bedrock User Guide.
+                            properties:
+                              provisionedConfiguration:
+                                description: Contains configurations for a provisioned
+                                  Amazon Redshift query engine.
+                                properties:
+                                  authConfiguration:
+                                    description: |-
+                                      Contains configurations for authentication to an Amazon Redshift provisioned
+                                      data warehouse. Specify the type of authentication to use in the type field
+                                      and include the corresponding field. If you specify IAM authentication, you
+                                      don't need to include another field.
+                                    properties:
+                                      databaseUser:
+                                        type: string
+                                      type:
+                                        type: string
+                                      usernamePasswordSecretARN:
+                                        type: string
+                                    type: object
+                                  clusterIdentifier:
+                                    type: string
+                                type: object
+                              serverlessConfiguration:
+                                description: Contains configurations for authentication
+                                  to Amazon Redshift Serverless.
+                                properties:
+                                  authConfiguration:
+                                    description: |-
+                                      Specifies configurations for authentication to a Redshift Serverless. Specify
+                                      the type of authentication to use in the type field and include the corresponding
+                                      field. If you specify IAM authentication, you don't need to include another
+                                      field.
+                                    properties:
+                                      type:
+                                        type: string
+                                      usernamePasswordSecretARN:
+                                        type: string
+                                    type: object
+                                  workgroupARN:
+                                    type: string
+                                type: object
+                              type:
+                                type: string
+                            type: object
+                          queryGenerationConfiguration:
+                            description: |-
+                              Contains configurations for query generation. For more information, see Build
+                              a knowledge base by connecting to a structured data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+                              in the Amazon Bedrock User Guide..
+                            properties:
+                              executionTimeoutSeconds:
+                                format: int64
+                                type: integer
+                              generationContext:
+                                description: '>Contains configurations for context
+                                  to use during query generation.'
+                                properties:
+                                  curatedQueries:
+                                    items:
+                                      description: |-
+                                        Contains configurations for a query, each of which defines information about
+                                        example queries to help the query engine generate appropriate SQL queries.
+                                      properties:
+                                        naturalLanguage:
+                                          type: string
+                                        sql:
+                                          type: string
+                                      type: object
+                                    type: array
+                                  tables:
+                                    items:
+                                      description: Contains information about a table
+                                        for the query engine to consider.
+                                      properties:
+                                        columns:
+                                          items:
+                                            description: |-
+                                              Contains information about a column in the current table for the query engine
+                                              to consider.
+                                            properties:
+                                              description:
+                                                type: string
+                                              inclusion:
+                                                type: string
+                                              name:
+                                                type: string
+                                            type: object
+                                          type: array
+                                        description:
+                                          type: string
+                                        inclusion:
+                                          type: string
+                                        name:
+                                          type: string
+                                      type: object
+                                    type: array
+                                type: object
+                            type: object
+                          storageConfigurations:
+                            items:
+                              description: |-
+                                Contains configurations for Amazon Redshift data storage. Specify the data
+                                storage service to use in the type field and include the corresponding field.
+                                For more information, see Build a knowledge base by connecting to a structured
+                                data source (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+                                in the Amazon Bedrock User Guide.
+                              properties:
+                                awsDataCatalogConfiguration:
+                                  description: Contains configurations for storage
+                                    in Glue Data Catalog.
+                                  properties:
+                                    tableNames:
+                                      items:
+                                        type: string
+                                      type: array
+                                  type: object
+                                redshiftConfiguration:
+                                  description: Contains configurations for storage
+                                    in Amazon Redshift.
+                                  properties:
+                                    databaseName:
+                                      type: string
+                                  type: object
+                                type_:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
+                      type:
+                        type: string
+                    type: object
+                  type:
+                    type: string
+                  vectorKnowledgeBaseConfiguration:
+                    description: |-
+                      Contains details about the model used to create vector embeddings for the
+                      knowledge base.
+                    properties:
+                      embeddingModelARN:
+                        type: string
+                      embeddingModelConfiguration:
+                        description: The configuration details for the embeddings
+                          model.
+                        properties:
+                          bedrockEmbeddingModelConfiguration:
+                            description: The vector configuration details for the
+                              Bedrock embeddings model.
+                            properties:
+                              dimensions:
+                                format: int64
+                                type: integer
+                              embeddingDataType:
+                                description: Bedrock models embedding data type. Can
+                                  be either float32 or binary.
+                                type: string
+                            type: object
+                        type: object
+                      supplementalDataStorageConfiguration:
+                        description: |-
+                          Specifies configurations for the storage location of the images extracted
+                          from multimodal documents in your data source. These images can be retrieved
+                          and returned to the end user.
+                        properties:
+                          storageLocations:
+                            items:
+                              description: |-
+                                Contains information about a storage location for images extracted from multimodal
+                                documents in your data source.
+                              properties:
+                                s3Location:
+                                  description: An Amazon S3 location.
+                                  properties:
+                                    uri:
+                                      type: string
+                                  type: object
+                                type_:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
+                    type: object
+                type: object
+              name:
+                description: |-
+                  A name for the knowledge base.
+
+                  Regex Pattern: `^([0-9a-zA-Z][_-]?){1,100}$`
+                type: string
+              roleARN:
+                description: |-
+                  The Amazon Resource Name (ARN) of the IAM role with permissions to invoke
+                  API operations on the knowledge base.
+
+                  Regex Pattern: `^arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+$`
+                type: string
+              storageConfiguration:
+                description: |-
+                  Contains details about the configuration of the vector database used for
+                  the knowledge base.
+                properties:
+                  mongoDBAtlasConfiguration:
+                    description: |-
+                      Contains details about the storage configuration of the knowledge base in
+                      MongoDB Atlas.
+                    properties:
+                      collectionName:
+                        type: string
+                      credentialsSecretARN:
+                        type: string
+                      databaseName:
+                        type: string
+                      endpoint:
+                        type: string
+                      endpointServiceName:
+                        type: string
+                      fieldMapping:
+                        description: |-
+                          Contains the names of the fields to which to map information about the vector
+                          store.
+                        properties:
+                          metadataField:
+                            type: string
+                          textField:
+                            type: string
+                          vectorField:
+                            type: string
+                        type: object
+                      vectorIndexName:
+                        type: string
+                    type: object
+                  opensearchServerlessConfiguration:
+                    description: |-
+                      Contains details about the storage configuration of the knowledge base in
+                      Amazon OpenSearch Service. For more information, see Create a vector index
+                      in Amazon OpenSearch Service (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
+                    properties:
+                      collectionARN:
+                        type: string
+                      fieldMapping:
+                        description: |-
+                          Contains the names of the fields to which to map information about the vector
+                          store.
+                        properties:
+                          metadataField:
+                            type: string
+                          textField:
+                            type: string
+                          vectorField:
+                            type: string
+                        type: object
+                      vectorIndexName:
+                        type: string
+                    type: object
+                  pineconeConfiguration:
+                    description: |-
+                      Contains details about the storage configuration of the knowledge base in
+                      Pinecone. For more information, see Create a vector index in Pinecone (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html).
+                    properties:
+                      connectionString:
+                        type: string
+                      credentialsSecretARN:
+                        type: string
+                      fieldMapping:
+                        description: |-
+                          Contains the names of the fields to which to map information about the vector
+                          store.
+                        properties:
+                          metadataField:
+                            type: string
+                          textField:
+                            type: string
+                        type: object
+                      namespace:
+                        type: string
+                    type: object
+                  rdsConfiguration:
+                    description: |-
+                      Contains details about the storage configuration of the knowledge base in
+                      Amazon RDS. For more information, see Create a vector index in Amazon RDS
+                      (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html).
+                    properties:
+                      credentialsSecretARN:
+                        type: string
+                      databaseName:
+                        type: string
+                      fieldMapping:
+                        description: |-
+                          Contains the names of the fields to which to map information about the vector
+                          store.
+                        properties:
+                          metadataField:
+                            type: string
+                          primaryKeyField:
+                            type: string
+                          textField:
+                            type: string
+                          vectorField:
+                            type: string
+                        type: object
+                      resourceARN:
+                        type: string
+                      tableName:
+                        type: string
+                    type: object
+                  redisEnterpriseCloudConfiguration:
+                    description: |-
+                      Contains details about the storage configuration of the knowledge base in
+                      Redis Enterprise Cloud. For more information, see Create a vector index in
+                      Redis Enterprise Cloud (https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html).
+                    properties:
+                      credentialsSecretARN:
+                        type: string
+                      endpoint:
+                        type: string
+                      fieldMapping:
+                        description: |-
+                          Contains the names of the fields to which to map information about the vector
+                          store.
+                        properties:
+                          metadataField:
+                            type: string
+                          textField:
+                            type: string
+                          vectorField:
+                            type: string
+                        type: object
+                      vectorIndexName:
+                        type: string
+                    type: object
+                  type:
+                    type: string
+                type: object
+              tags:
+                additionalProperties:
+                  type: string
+                description: |-
+                  An object containing key-value pairs that define the tags to attach to the
+                  resource.
+                type: object
+            required:
+            - knowledgeBaseConfiguration
+            - name
+            - roleARN
+            - storageConfiguration
+            type: object
+          status:
+            description: KnowledgeBaseStatus defines the observed state of KnowledgeBase
+            properties:
+              ackResourceMetadata:
+                description: |-
+                  All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+                  that is used to contain resource sync state, account ownership,
+                  constructed ARN for the resource
+                properties:
+                  arn:
+                    description: |-
+                      ARN is the Amazon Resource Name for the resource. This is a
+                      globally-unique identifier and is set only by the ACK service controller
+                      once the controller has orchestrated the creation of the resource OR
+                      when it has verified that an "adopted" resource (a resource where the
+                      ARN annotation was set by the Kubernetes user on the CR) exists and
+                      matches the supplied CR's Spec field values.
+                      https://github.com/aws/aws-controllers-k8s/issues/270
+                    type: string
+                  ownerAccountID:
+                    description: |-
+                      OwnerAccountID is the AWS Account ID of the account that owns the
+                      backend AWS service API resource.
+                    type: string
+                  region:
+                    description: Region is the AWS region in which the resource exists
+                      or will exist.
+                    type: string
+                required:
+                - ownerAccountID
+                - region
+                type: object
+              conditions:
+                description: |-
+                  All CRs managed by ACK have a common `Status.Conditions` member that
+                  contains a collection of `ackv1alpha1.Condition` objects that describe
+                  the various terminal states of the CR and its backend AWS service API
+                  resource
+                items:
+                  description: |-
+                    Condition is the common struct used by all CRDs managed by ACK service
+                    controllers to indicate terminal states  of the CR and its backend AWS
+                    service API resource
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type is the type of the Condition
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              createdAt:
+                description: The time the knowledge base was created.
+                format: date-time
+                type: string
+              failureReasons:
+                description: A list of reasons that the API operation on the knowledge
+                  base failed.
+                items:
+                  type: string
+                type: array
+              knowledgeBaseID:
+                description: |-
+                  The unique identifier of the knowledge base.
+
+                  Regex Pattern: `^[0-9a-zA-Z]{10}$`
+                type: string
+              status:
+                description: |-
+                  The status of the knowledge base. The following statuses are possible:
+
+                     * CREATING – The knowledge base is being created.
+
+                     * ACTIVE – The knowledge base is ready to be queried.
+
+                     * DELETING – The knowledge base is being deleted.
+
+                     * UPDATING – The knowledge base is being updated.
+
+                     * FAILED – The knowledge base API operation failed.
+                type: string
+              updatedAt:
+                description: The time the knowledge base was last updated.
+                format: date-time
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
