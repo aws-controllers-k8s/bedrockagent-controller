@@ -609,6 +609,8 @@ func (rm *resourceManager) newCreateRequestPayload(
 				}
 				f3f0f0Parent := &svcsdktypes.OrchestrationExecutorMemberLambda{}
 				f3f0f0Parent.Value = *r.ko.Spec.CustomOrchestration.Executor.Lambda
+				f3f0 = f3f0f0Parent
+				isInterfaceSet = true
 			}
 			f3.Executor = f3f0
 		}
@@ -636,7 +638,7 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy
@@ -1061,6 +1063,8 @@ func (rm *resourceManager) newUpdateRequestPayload(
 				}
 				f4f0f0Parent := &svcsdktypes.OrchestrationExecutorMemberLambda{}
 				f4f0f0Parent.Value = *r.ko.Spec.CustomOrchestration.Executor.Lambda
+				f4f0 = f4f0f0Parent
+				isInterfaceSet = true
 			}
 			f4.Executor = f4f0
 		}
