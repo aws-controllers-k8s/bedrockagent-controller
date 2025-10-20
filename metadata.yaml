@@ -1,6 +1,6 @@
 service:
-  full_name: Amazon Bedrock
-  short_name: Bedrock
+  full_name: Agents for Amazon Bedrock
+  short_name: Bedrock Agents
   link: https://aws.amazon.com/bedrock/
   documentation: https://docs.aws.amazon.com/bedrock/
 api_versions:
