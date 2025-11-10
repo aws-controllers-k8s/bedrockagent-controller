@@ -6,4 +6,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: public.ecr.aws/aws-controllers-k8s/bedrockagent-controller
-  newTag: 0.1.2
+  newTag: 1.0.0
