@@ -17,16 +17,15 @@ package agent
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -69,7 +68,7 @@ func newResourceDelta(
 			delta.Add("Spec.AgentResourceRoleARN", a.ko.Spec.AgentResourceRoleARN, b.ko.Spec.AgentResourceRoleARN)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.AgentResourceRoleRef, b.ko.Spec.AgentResourceRoleRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.AgentResourceRoleRef, b.ko.Spec.AgentResourceRoleRef) {
 		delta.Add("Spec.AgentResourceRoleRef", a.ko.Spec.AgentResourceRoleRef, b.ko.Spec.AgentResourceRoleRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.CustomOrchestration, b.ko.Spec.CustomOrchestration) {
