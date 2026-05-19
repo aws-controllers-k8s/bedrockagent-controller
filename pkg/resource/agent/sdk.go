@@ -638,7 +638,7 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.IdleSessionTTLInSeconds != nil {
 		idleSessionTTLInSecondsCopy0 := *r.ko.Spec.IdleSessionTTLInSeconds
 		if idleSessionTTLInSecondsCopy0 > math.MaxInt32 || idleSessionTTLInSecondsCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field IdleSessionTTLInSeconds is of type int32")
+			return nil, fmt.Errorf("error: field idleSessionTTLInSeconds is of type int32")
 		}
 		idleSessionTTLInSecondsCopy := int32(idleSessionTTLInSecondsCopy0)
 		res.IdleSessionTTLInSeconds = &idleSessionTTLInSecondsCopy
@@ -1256,6 +1256,9 @@ func (rm *resourceManager) setStatusDefaults(
 	}
 	if ko.Status.ACKResourceMetadata.Region == nil {
 		ko.Status.ACKResourceMetadata.Region = &rm.awsRegion
+	}
+	if ko.Status.ACKResourceMetadata.Partition == nil {
+		ko.Status.ACKResourceMetadata.Partition = &rm.awsPartition
 	}
 	if ko.Status.ACKResourceMetadata.OwnerAccountID == nil {
 		ko.Status.ACKResourceMetadata.OwnerAccountID = &rm.awsAccountID
