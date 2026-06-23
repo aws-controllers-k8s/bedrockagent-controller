@@ -19,10 +19,12 @@ from dataclasses import dataclass
 from acktest.bootstrapping import Resources
 from acktest.bootstrapping.iam import Role
 from e2e import bootstrap_directory
+from e2e.vector_store import VectorStore
 
 @dataclass
 class BootstrapResources(Resources):
     AgentRole: Role
+    KnowledgeBaseVectorStore: VectorStore
 
 _bootstrap_resources = None
 

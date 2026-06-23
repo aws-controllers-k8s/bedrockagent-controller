@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - common
   - bases/bedrockagent.services.k8s.aws_agents.yaml
+  - bases/bedrockagent.services.k8s.aws_knowledgebases.yaml

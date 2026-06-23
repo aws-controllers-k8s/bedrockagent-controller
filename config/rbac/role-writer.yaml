@@ -10,6 +10,7 @@ rules:
   - bedrockagent.services.k8s.aws
   resources:
   - agents
+  - knowledgebases
   verbs:
   - create
   - delete
@@ -22,6 +23,7 @@ rules:
   - bedrockagent.services.k8s.aws
   resources:
   - agents
+  - knowledgebases
   verbs:
   - get
   - patch
