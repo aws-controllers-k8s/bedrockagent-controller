@@ -313,15 +313,15 @@ const (
 	KnowledgeBaseState_ENABLED  KnowledgeBaseState = "ENABLED"
 )
 
-type KnowledgeBaseStatus string
+type KnowledgeBaseStatus_SDK string
 
 const (
-	KnowledgeBaseStatus_ACTIVE              KnowledgeBaseStatus = "ACTIVE"
-	KnowledgeBaseStatus_CREATING            KnowledgeBaseStatus = "CREATING"
-	KnowledgeBaseStatus_DELETE_UNSUCCESSFUL KnowledgeBaseStatus = "DELETE_UNSUCCESSFUL"
-	KnowledgeBaseStatus_DELETING            KnowledgeBaseStatus = "DELETING"
-	KnowledgeBaseStatus_FAILED              KnowledgeBaseStatus = "FAILED"
-	KnowledgeBaseStatus_UPDATING            KnowledgeBaseStatus = "UPDATING"
+	KnowledgeBaseStatus_SDK_ACTIVE              KnowledgeBaseStatus_SDK = "ACTIVE"
+	KnowledgeBaseStatus_SDK_CREATING            KnowledgeBaseStatus_SDK = "CREATING"
+	KnowledgeBaseStatus_SDK_DELETE_UNSUCCESSFUL KnowledgeBaseStatus_SDK = "DELETE_UNSUCCESSFUL"
+	KnowledgeBaseStatus_SDK_DELETING            KnowledgeBaseStatus_SDK = "DELETING"
+	KnowledgeBaseStatus_SDK_FAILED              KnowledgeBaseStatus_SDK = "FAILED"
+	KnowledgeBaseStatus_SDK_UPDATING            KnowledgeBaseStatus_SDK = "UPDATING"
 )
 
 type KnowledgeBaseStorageType string
