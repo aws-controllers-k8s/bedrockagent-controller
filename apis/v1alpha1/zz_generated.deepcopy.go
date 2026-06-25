@@ -516,6 +516,11 @@ func (in *AgentSpec) DeepCopyInto(out *AgentSpec) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.CustomerEncryptionKeyRef != nil {
+		in, out := &in.CustomerEncryptionKeyRef, &out.CustomerEncryptionKeyRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Description != nil {
 		in, out := &in.Description, &out.Description
 		*out = new(string)
@@ -1701,6 +1706,11 @@ func (in *OrchestrationExecutor) DeepCopyInto(out *OrchestrationExecutor) {
 		in, out := &in.Lambda, &out.Lambda
 		*out = new(string)
 		**out = **in
+	}
+	if in.LambdaRef != nil {
+		in, out := &in.LambdaRef, &out.LambdaRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
