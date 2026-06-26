@@ -410,6 +410,8 @@ type MetadataAttributeValue struct {
 // carried out upon invoking the custom orchestration.
 type OrchestrationExecutor struct {
 	Lambda *string `json:"lambda,omitempty"`
+	// Reference field for Lambda
+	LambdaRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"lambdaRef,omitempty"`
 }
 
 // Contains details about a parameter in a function for an action group.

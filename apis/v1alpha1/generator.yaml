@@ -27,6 +27,16 @@ resources:
           resource: Role
           service_name: iam
           path: Status.ACKResourceMetadata.ARN
+      CustomerEncryptionKeyARN:
+        references:
+          resource: Key
+          service_name: kms
+          path: Status.ACKResourceMetadata.ARN
+      CustomOrchestration.Executor.Lambda:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
       PromptOverrideConfiguration:
         late_initialize: {}
         compare:
