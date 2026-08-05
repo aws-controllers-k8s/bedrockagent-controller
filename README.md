@@ -1,7 +1,7 @@
 # ACK service controller for Agents for Amazon Bedrock
 
 This repository contains source code for the AWS Controllers for Kubernetes
-(ACK) service controller for .
+(ACK) service controller for Bedrock Agents Classic.
 
 Please [log issues][ack-issues] and feedback on the main AWS Controllers for
 Kubernetes Github project.
