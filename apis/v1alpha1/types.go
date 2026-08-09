@@ -410,6 +410,8 @@ type MetadataAttributeValue struct {
 // carried out upon invoking the custom orchestration.
 type OrchestrationExecutor struct {
 	Lambda *string `json:"lambda,omitempty"`
+	// Reference field for Lambda
+	LambdaRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"lambdaRef,omitempty"`
 }
 
 // Contains details about a parameter in a function for an action group.
@@ -467,8 +469,10 @@ type PromptModelInferenceConfiguration struct {
 // Contains configurations to override prompts in different parts of an agent
 // sequence. For more information, see Advanced prompts (https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html).
 type PromptOverrideConfiguration struct {
-	OverrideLambda       *string                `json:"overrideLambda,omitempty"`
-	PromptConfigurations []*PromptConfiguration `json:"promptConfigurations,omitempty"`
+	OverrideLambda *string `json:"overrideLambda,omitempty"`
+	// Reference field for OverrideLambda
+	OverrideLambdaRef    *ackv1alpha1.AWSResourceReferenceWrapper `json:"overrideLambdaRef,omitempty"`
+	PromptConfigurations []*PromptConfiguration                   `json:"promptConfigurations,omitempty"`
 }
 
 // Contains information about a prompt in your Prompt management tool.

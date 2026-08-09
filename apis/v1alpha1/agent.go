@@ -43,7 +43,8 @@ type AgentSpec struct {
 	// The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.
 	//
 	// Regex Pattern: `^arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$`
-	CustomerEncryptionKeyARN *string `json:"customerEncryptionKeyARN,omitempty"`
+	CustomerEncryptionKeyARN *string                                  `json:"customerEncryptionKeyARN,omitempty"`
+	CustomerEncryptionKeyRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"customerEncryptionKeyRef,omitempty"`
 	// A description of the agent.
 	Description *string `json:"description,omitempty"`
 	// The identifier for the model that you want to be used for orchestration by

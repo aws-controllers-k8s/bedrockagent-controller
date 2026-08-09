@@ -27,11 +27,49 @@ resources:
           resource: Role
           service_name: iam
           path: Status.ACKResourceMetadata.ARN
+      CustomerEncryptionKeyARN:
+        references:
+          resource: Key
+          service_name: kms
+          path: Status.ACKResourceMetadata.ARN
       PromptOverrideConfiguration:
-        late_initialize: {}
+        # skip_incomplete_check pairs with the set: ignore below. Suppressing the
+        # Create/Update write-back means the struct can legitimately stay absent
+        # from the spec, and without this the generated incompleteLateInitialization
+        # would hold the agent at ACK.ResourceSynced=False requeueing every 5s.
+        late_initialize:
+          skip_incomplete_check: {}
         compare:
           # Handled in custom hook
           is_ignored: true
+        # overrideLambda below carries a reference, and both sdkCreate and
+        # sdkUpdate wrote this whole struct back into the spec from the response.
+        # The response carries the resolved ARN but not the *Ref companion, so the
+        # write-back would drop the reference after the first reconcile.
+        set:
+          - method: Create
+            ignore: true
+          - method: Update
+            ignore: true
+      PromptOverrideConfiguration.OverrideLambda:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      # Same write-back hazard as PromptOverrideConfiguration. No late_initialize
+      # is needed here: AWS returns customOrchestration only when the agent is
+      # configured for it, so an omitted struct stays nil on both sides.
+      CustomOrchestration:
+        set:
+          - method: Create
+            ignore: true
+          - method: Update
+            ignore: true
+      CustomOrchestration.Executor.Lambda:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
       Tags:
         from:
           operation: TagResource

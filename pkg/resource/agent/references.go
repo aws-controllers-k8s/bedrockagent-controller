@@ -24,6 +24,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	iamapitypes "github.com/aws-controllers-k8s/iam-controller/apis/v1alpha1"
+	kmsapitypes "github.com/aws-controllers-k8s/kms-controller/apis/v1alpha1"
+	lambdaapitypes "github.com/aws-controllers-k8s/lambda-controller/apis/v1alpha1"
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
 	ackrt "github.com/aws-controllers-k8s/runtime/pkg/runtime"
@@ -35,6 +37,15 @@ import (
 // +kubebuilder:rbac:groups=iam.services.k8s.aws,resources=roles,verbs=get;list
 // +kubebuilder:rbac:groups=iam.services.k8s.aws,resources=roles/status,verbs=get;list
 
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys,verbs=get;list
+// +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
 // ClearResolvedReferences removes any reference values that were made
 // concrete in the spec. It returns a copy of the input AWSResource which
 // contains the original *Ref values, but none of their respective concrete
@@ -44,6 +55,24 @@ func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) ack
 
 	if ko.Spec.AgentResourceRoleRef != nil {
 		ko.Spec.AgentResourceRoleARN = nil
+	}
+
+	if ko.Spec.CustomOrchestration != nil {
+		if ko.Spec.CustomOrchestration.Executor != nil {
+			if ko.Spec.CustomOrchestration.Executor.LambdaRef != nil {
+				ko.Spec.CustomOrchestration.Executor.Lambda = nil
+			}
+		}
+	}
+
+	if ko.Spec.CustomerEncryptionKeyRef != nil {
+		ko.Spec.CustomerEncryptionKeyARN = nil
+	}
+
+	if ko.Spec.PromptOverrideConfiguration != nil {
+		if ko.Spec.PromptOverrideConfiguration.OverrideLambdaRef != nil {
+			ko.Spec.PromptOverrideConfiguration.OverrideLambda = nil
+		}
 	}
 
 	return &resource{ko}
@@ -71,6 +100,24 @@ func (rm *resourceManager) ResolveReferences(
 		resourceHasReferences = resourceHasReferences || fieldHasReferences
 	}
 
+	if fieldHasReferences, err := rm.resolveReferenceForCustomOrchestration_Executor_Lambda(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForCustomerEncryptionKeyARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForPromptOverrideConfiguration_OverrideLambda(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
 	return &resource{ko}, resourceHasReferences, err
 }
 
@@ -83,6 +130,24 @@ func validateReferenceFields(ko *svcapitypes.Agent) error {
 	}
 	if ko.Spec.AgentResourceRoleRef == nil && ko.Spec.AgentResourceRoleARN == nil {
 		return ackerr.ResourceReferenceOrIDRequiredFor("AgentResourceRoleARN", "AgentResourceRoleRef")
+	}
+
+	if ko.Spec.CustomOrchestration != nil {
+		if ko.Spec.CustomOrchestration.Executor != nil {
+			if ko.Spec.CustomOrchestration.Executor.LambdaRef != nil && ko.Spec.CustomOrchestration.Executor.Lambda != nil {
+				return ackerr.ResourceReferenceAndIDNotSupportedFor("CustomOrchestration.Executor.Lambda", "CustomOrchestration.Executor.LambdaRef")
+			}
+		}
+	}
+
+	if ko.Spec.CustomerEncryptionKeyRef != nil && ko.Spec.CustomerEncryptionKeyARN != nil {
+		return ackerr.ResourceReferenceAndIDNotSupportedFor("CustomerEncryptionKeyARN", "CustomerEncryptionKeyRef")
+	}
+
+	if ko.Spec.PromptOverrideConfiguration != nil {
+		if ko.Spec.PromptOverrideConfiguration.OverrideLambdaRef != nil && ko.Spec.PromptOverrideConfiguration.OverrideLambda != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("PromptOverrideConfiguration.OverrideLambda", "PromptOverrideConfiguration.OverrideLambdaRef")
+		}
 	}
 	return nil
 }
@@ -176,4 +241,229 @@ func getReferencedResourceState_Role(
 			"Status.ACKResourceMetadata.ARN")
 	}
 	return nil
+}
+
+// resolveReferenceForCustomOrchestration_Executor_Lambda reads the resource referenced
+// from CustomOrchestration.Executor.LambdaRef field and sets the CustomOrchestration.Executor.Lambda
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForCustomOrchestration_Executor_Lambda(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.Agent,
+) (hasReferences bool, err error) {
+	if ko.Spec.CustomOrchestration != nil {
+		if ko.Spec.CustomOrchestration.Executor != nil {
+			if ko.Spec.CustomOrchestration.Executor.LambdaRef != nil && ko.Spec.CustomOrchestration.Executor.LambdaRef.From != nil {
+				hasReferences = true
+				arr := ko.Spec.CustomOrchestration.Executor.LambdaRef.From
+				if arr.Name == nil || *arr.Name == "" {
+					return hasReferences, fmt.Errorf("provided resource reference is nil or empty: CustomOrchestration.Executor.LambdaRef")
+				}
+				namespace, err := ackrt.ResolveCrossNamespaceReference(
+					ctx,
+					rm.cfg.EnableCrossNamespace,
+					&ko.Status.Conditions,
+					ackrt.CrossNamespaceRefKindResource,
+					ko.ObjectMeta.GetNamespace(),
+					arr.Namespace,
+					*arr.Name,
+				)
+				if err != nil {
+					return hasReferences, err
+				}
+				obj := &lambdaapitypes.Function{}
+				if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+					return hasReferences, err
+				}
+				ko.Spec.CustomOrchestration.Executor.Lambda = (*string)(obj.Status.ACKResourceMetadata.ARN)
+			}
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// getReferencedResourceState_Function looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_Function(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *lambdaapitypes.Function,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
+			return ackerr.ResourceReferenceTerminalFor(
+				"Function",
+				namespace, name)
+		}
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"Function",
+			namespace, name)
+	}
+	var refResourceSynced bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
+		}
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"Function",
+			namespace, name)
+	}
+	if obj.Status.ACKResourceMetadata == nil || obj.Status.ACKResourceMetadata.ARN == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"Function",
+			namespace, name,
+			"Status.ACKResourceMetadata.ARN")
+	}
+	return nil
+}
+
+// resolveReferenceForCustomerEncryptionKeyARN reads the resource referenced
+// from CustomerEncryptionKeyRef field and sets the CustomerEncryptionKeyARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForCustomerEncryptionKeyARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.Agent,
+) (hasReferences bool, err error) {
+	if ko.Spec.CustomerEncryptionKeyRef != nil && ko.Spec.CustomerEncryptionKeyRef.From != nil {
+		hasReferences = true
+		arr := ko.Spec.CustomerEncryptionKeyRef.From
+		if arr.Name == nil || *arr.Name == "" {
+			return hasReferences, fmt.Errorf("provided resource reference is nil or empty: CustomerEncryptionKeyRef")
+		}
+		namespace, err := ackrt.ResolveCrossNamespaceReference(
+			ctx,
+			rm.cfg.EnableCrossNamespace,
+			&ko.Status.Conditions,
+			ackrt.CrossNamespaceRefKindResource,
+			ko.ObjectMeta.GetNamespace(),
+			arr.Namespace,
+			*arr.Name,
+		)
+		if err != nil {
+			return hasReferences, err
+		}
+		obj := &kmsapitypes.Key{}
+		if err := getReferencedResourceState_Key(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+			return hasReferences, err
+		}
+		ko.Spec.CustomerEncryptionKeyARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+	}
+
+	return hasReferences, nil
+}
+
+// getReferencedResourceState_Key looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_Key(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *kmsapitypes.Key,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
+			return ackerr.ResourceReferenceTerminalFor(
+				"Key",
+				namespace, name)
+		}
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"Key",
+			namespace, name)
+	}
+	var refResourceSynced bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
+		}
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"Key",
+			namespace, name)
+	}
+	if obj.Status.ACKResourceMetadata == nil || obj.Status.ACKResourceMetadata.ARN == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"Key",
+			namespace, name,
+			"Status.ACKResourceMetadata.ARN")
+	}
+	return nil
+}
+
+// resolveReferenceForPromptOverrideConfiguration_OverrideLambda reads the resource referenced
+// from PromptOverrideConfiguration.OverrideLambdaRef field and sets the PromptOverrideConfiguration.OverrideLambda
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForPromptOverrideConfiguration_OverrideLambda(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.Agent,
+) (hasReferences bool, err error) {
+	if ko.Spec.PromptOverrideConfiguration != nil {
+		if ko.Spec.PromptOverrideConfiguration.OverrideLambdaRef != nil && ko.Spec.PromptOverrideConfiguration.OverrideLambdaRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.PromptOverrideConfiguration.OverrideLambdaRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: PromptOverrideConfiguration.OverrideLambdaRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.PromptOverrideConfiguration.OverrideLambda = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
 }

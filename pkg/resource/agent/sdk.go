@@ -411,23 +411,6 @@ func (rm *resourceManager) sdkCreate(
 	} else {
 		ko.Status.CreatedAt = nil
 	}
-	if resp.Agent.CustomOrchestration != nil {
-		f9 := &svcapitypes.CustomOrchestration{}
-		if resp.Agent.CustomOrchestration.Executor != nil {
-			f9f0 := &svcapitypes.OrchestrationExecutor{}
-			switch resp.Agent.CustomOrchestration.Executor.(type) {
-			case *svcsdktypes.OrchestrationExecutorMemberLambda:
-				f9f0f0 := resp.Agent.CustomOrchestration.Executor.(*svcsdktypes.OrchestrationExecutorMemberLambda)
-				if f9f0f0 != nil {
-					f9f0.Lambda = &f9f0f0.Value
-				}
-			}
-			f9.Executor = f9f0
-		}
-		ko.Spec.CustomOrchestration = f9
-	} else {
-		ko.Spec.CustomOrchestration = nil
-	}
 	if resp.Agent.CustomerEncryptionKeyArn != nil {
 		ko.Spec.CustomerEncryptionKeyARN = resp.Agent.CustomerEncryptionKeyArn
 	} else {
@@ -507,64 +490,6 @@ func (rm *resourceManager) sdkCreate(
 		ko.Status.PreparedAt = &metav1.Time{*resp.Agent.PreparedAt}
 	} else {
 		ko.Status.PreparedAt = nil
-	}
-	if resp.Agent.PromptOverrideConfiguration != nil {
-		f20 := &svcapitypes.PromptOverrideConfiguration{}
-		if resp.Agent.PromptOverrideConfiguration.OverrideLambda != nil {
-			f20.OverrideLambda = resp.Agent.PromptOverrideConfiguration.OverrideLambda
-		}
-		if resp.Agent.PromptOverrideConfiguration.PromptConfigurations != nil {
-			f20f1 := []*svcapitypes.PromptConfiguration{}
-			for _, f20f1iter := range resp.Agent.PromptOverrideConfiguration.PromptConfigurations {
-				f20f1elem := &svcapitypes.PromptConfiguration{}
-				if f20f1iter.BasePromptTemplate != nil {
-					f20f1elem.BasePromptTemplate = f20f1iter.BasePromptTemplate
-				}
-				if f20f1iter.FoundationModel != nil {
-					f20f1elem.FoundationModel = f20f1iter.FoundationModel
-				}
-				if f20f1iter.InferenceConfiguration != nil {
-					f20f1elemf2 := &svcapitypes.InferenceConfiguration{}
-					if f20f1iter.InferenceConfiguration.MaximumLength != nil {
-						maximumLengthCopy := int64(*f20f1iter.InferenceConfiguration.MaximumLength)
-						f20f1elemf2.MaximumLength = &maximumLengthCopy
-					}
-					if f20f1iter.InferenceConfiguration.StopSequences != nil {
-						f20f1elemf2.StopSequences = aws.StringSlice(f20f1iter.InferenceConfiguration.StopSequences)
-					}
-					if f20f1iter.InferenceConfiguration.Temperature != nil {
-						temperatureCopy := float64(*f20f1iter.InferenceConfiguration.Temperature)
-						f20f1elemf2.Temperature = &temperatureCopy
-					}
-					if f20f1iter.InferenceConfiguration.TopK != nil {
-						topKCopy := int64(*f20f1iter.InferenceConfiguration.TopK)
-						f20f1elemf2.TopK = &topKCopy
-					}
-					if f20f1iter.InferenceConfiguration.TopP != nil {
-						topPCopy := float64(*f20f1iter.InferenceConfiguration.TopP)
-						f20f1elemf2.TopP = &topPCopy
-					}
-					f20f1elem.InferenceConfiguration = f20f1elemf2
-				}
-				if f20f1iter.ParserMode != "" {
-					f20f1elem.ParserMode = aws.String(string(f20f1iter.ParserMode))
-				}
-				if f20f1iter.PromptCreationMode != "" {
-					f20f1elem.PromptCreationMode = aws.String(string(f20f1iter.PromptCreationMode))
-				}
-				if f20f1iter.PromptState != "" {
-					f20f1elem.PromptState = aws.String(string(f20f1iter.PromptState))
-				}
-				if f20f1iter.PromptType != "" {
-					f20f1elem.PromptType = aws.String(string(f20f1iter.PromptType))
-				}
-				f20f1 = append(f20f1, f20f1elem)
-			}
-			f20.PromptConfigurations = f20f1
-		}
-		ko.Spec.PromptOverrideConfiguration = f20
-	} else {
-		ko.Spec.PromptOverrideConfiguration = nil
 	}
 	if resp.Agent.RecommendedActions != nil {
 		ko.Status.RecommendedActions = aws.StringSlice(resp.Agent.RecommendedActions)
@@ -861,23 +786,6 @@ func (rm *resourceManager) sdkUpdate(
 	} else {
 		ko.Status.CreatedAt = nil
 	}
-	if resp.Agent.CustomOrchestration != nil {
-		f9 := &svcapitypes.CustomOrchestration{}
-		if resp.Agent.CustomOrchestration.Executor != nil {
-			f9f0 := &svcapitypes.OrchestrationExecutor{}
-			switch resp.Agent.CustomOrchestration.Executor.(type) {
-			case *svcsdktypes.OrchestrationExecutorMemberLambda:
-				f9f0f0 := resp.Agent.CustomOrchestration.Executor.(*svcsdktypes.OrchestrationExecutorMemberLambda)
-				if f9f0f0 != nil {
-					f9f0.Lambda = &f9f0f0.Value
-				}
-			}
-			f9.Executor = f9f0
-		}
-		ko.Spec.CustomOrchestration = f9
-	} else {
-		ko.Spec.CustomOrchestration = nil
-	}
 	if resp.Agent.CustomerEncryptionKeyArn != nil {
 		ko.Spec.CustomerEncryptionKeyARN = resp.Agent.CustomerEncryptionKeyArn
 	} else {
@@ -957,64 +865,6 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Status.PreparedAt = &metav1.Time{*resp.Agent.PreparedAt}
 	} else {
 		ko.Status.PreparedAt = nil
-	}
-	if resp.Agent.PromptOverrideConfiguration != nil {
-		f20 := &svcapitypes.PromptOverrideConfiguration{}
-		if resp.Agent.PromptOverrideConfiguration.OverrideLambda != nil {
-			f20.OverrideLambda = resp.Agent.PromptOverrideConfiguration.OverrideLambda
-		}
-		if resp.Agent.PromptOverrideConfiguration.PromptConfigurations != nil {
-			f20f1 := []*svcapitypes.PromptConfiguration{}
-			for _, f20f1iter := range resp.Agent.PromptOverrideConfiguration.PromptConfigurations {
-				f20f1elem := &svcapitypes.PromptConfiguration{}
-				if f20f1iter.BasePromptTemplate != nil {
-					f20f1elem.BasePromptTemplate = f20f1iter.BasePromptTemplate
-				}
-				if f20f1iter.FoundationModel != nil {
-					f20f1elem.FoundationModel = f20f1iter.FoundationModel
-				}
-				if f20f1iter.InferenceConfiguration != nil {
-					f20f1elemf2 := &svcapitypes.InferenceConfiguration{}
-					if f20f1iter.InferenceConfiguration.MaximumLength != nil {
-						maximumLengthCopy := int64(*f20f1iter.InferenceConfiguration.MaximumLength)
-						f20f1elemf2.MaximumLength = &maximumLengthCopy
-					}
-					if f20f1iter.InferenceConfiguration.StopSequences != nil {
-						f20f1elemf2.StopSequences = aws.StringSlice(f20f1iter.InferenceConfiguration.StopSequences)
-					}
-					if f20f1iter.InferenceConfiguration.Temperature != nil {
-						temperatureCopy := float64(*f20f1iter.InferenceConfiguration.Temperature)
-						f20f1elemf2.Temperature = &temperatureCopy
-					}
-					if f20f1iter.InferenceConfiguration.TopK != nil {
-						topKCopy := int64(*f20f1iter.InferenceConfiguration.TopK)
-						f20f1elemf2.TopK = &topKCopy
-					}
-					if f20f1iter.InferenceConfiguration.TopP != nil {
-						topPCopy := float64(*f20f1iter.InferenceConfiguration.TopP)
-						f20f1elemf2.TopP = &topPCopy
-					}
-					f20f1elem.InferenceConfiguration = f20f1elemf2
-				}
-				if f20f1iter.ParserMode != "" {
-					f20f1elem.ParserMode = aws.String(string(f20f1iter.ParserMode))
-				}
-				if f20f1iter.PromptCreationMode != "" {
-					f20f1elem.PromptCreationMode = aws.String(string(f20f1iter.PromptCreationMode))
-				}
-				if f20f1iter.PromptState != "" {
-					f20f1elem.PromptState = aws.String(string(f20f1iter.PromptState))
-				}
-				if f20f1iter.PromptType != "" {
-					f20f1elem.PromptType = aws.String(string(f20f1iter.PromptType))
-				}
-				f20f1 = append(f20f1, f20f1elem)
-			}
-			f20.PromptConfigurations = f20f1
-		}
-		ko.Spec.PromptOverrideConfiguration = f20
-	} else {
-		ko.Spec.PromptOverrideConfiguration = nil
 	}
 	if resp.Agent.RecommendedActions != nil {
 		ko.Status.RecommendedActions = aws.StringSlice(resp.Agent.RecommendedActions)
