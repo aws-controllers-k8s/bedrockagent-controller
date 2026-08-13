@@ -93,6 +93,9 @@ func newResourceDelta(
 			delta.Add("Spec.CustomerEncryptionKeyARN", a.ko.Spec.CustomerEncryptionKeyARN, b.ko.Spec.CustomerEncryptionKeyARN)
 		}
 	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.CustomerEncryptionKeyRef, b.ko.Spec.CustomerEncryptionKeyRef) {
+		delta.Add("Spec.CustomerEncryptionKeyRef", a.ko.Spec.CustomerEncryptionKeyRef, b.ko.Spec.CustomerEncryptionKeyRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.Description, b.ko.Spec.Description) {
 		delta.Add("Spec.Description", a.ko.Spec.Description, b.ko.Spec.Description)
 	} else if a.ko.Spec.Description != nil && b.ko.Spec.Description != nil {
