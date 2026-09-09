@@ -52,30 +52,30 @@ type AgentSpec struct {
 	// The modelId to provide depends on the type of model or throughput that you
 	// use:
 	//
-	//   - If you use a base model, specify the model ID or its ARN. For a list
-	//     of model IDs for base models, see Amazon Bedrock base model IDs (on-demand
-	//     throughput) (https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns)
-	//     in the Amazon Bedrock User Guide.
+	//    * If you use a base model, specify the model ID or its ARN. For a list
+	//    of model IDs for base models, see Amazon Bedrock base model IDs (on-demand
+	//    throughput) (https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns)
+	//    in the Amazon Bedrock User Guide.
 	//
-	//   - If you use an inference profile, specify the inference profile ID or
-	//     its ARN. For a list of inference profile IDs, see Supported Regions and
-	//     models for cross-region inference (https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html)
-	//     in the Amazon Bedrock User Guide.
+	//    * If you use an inference profile, specify the inference profile ID or
+	//    its ARN. For a list of inference profile IDs, see Supported Regions and
+	//    models for cross-region inference (https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html)
+	//    in the Amazon Bedrock User Guide.
 	//
-	//   - If you use a provisioned model, specify the ARN of the Provisioned Throughput.
-	//     For more information, see Run inference using a Provisioned Throughput
-	//     (https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html)
-	//     in the Amazon Bedrock User Guide.
+	//    * If you use a provisioned model, specify the ARN of the Provisioned Throughput.
+	//    For more information, see Run inference using a Provisioned Throughput
+	//    (https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html)
+	//    in the Amazon Bedrock User Guide.
 	//
-	//   - If you use a custom model, first purchase Provisioned Throughput for
-	//     it. Then specify the ARN of the resulting provisioned model. For more
-	//     information, see Use a custom model in Amazon Bedrock (https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html)
-	//     in the Amazon Bedrock User Guide.
+	//    * If you use a custom model, first purchase Provisioned Throughput for
+	//    it. Then specify the ARN of the resulting provisioned model. For more
+	//    information, see Use a custom model in Amazon Bedrock (https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html)
+	//    in the Amazon Bedrock User Guide.
 	//
-	//   - If you use an imported model (https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html),
-	//     specify the ARN of the imported model. You can get the model ARN from
-	//     a successful call to CreateModelImportJob (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html)
-	//     or from the Imported models page in the Amazon Bedrock console.
+	//    * If you use an imported model (https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html),
+	//    specify the ARN of the imported model. You can get the model ARN from
+	//    a successful call to CreateModelImportJob (https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html)
+	//    or from the Imported models page in the Amazon Bedrock console.
 	//
 	// Regex Pattern: `^(arn:aws(-[^:]{1,12})?:(bedrock|sagemaker):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$`
 	FoundationModel *string `json:"foundationModel,omitempty"`
