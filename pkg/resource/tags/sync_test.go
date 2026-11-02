@@ -134,18 +134,24 @@ func TestGetResourceTags(t *testing.T) {
 }
 
 func TestSyncResourceTags(t *testing.T) {
+	const resourceARN = "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent"
+
 	tests := []struct {
 		name        string
-		resourceARN string
 		desiredTags map[string]*string
 		latestTags  map[string]*string
-		mockClient  func() tagsClient
-		mockMetrics func() metricsRecorder
-		wantErr     bool
+		// wantTagged is the Tags expected in TagResource; nil means not called.
+		wantTagged map[string]string
+		// wantUntagged is the TagKeys expected in UntagResource; nil means not called.
+		wantUntagged []string
+		// wantCalls is the ordered list of API operations expected to be invoked.
+		wantCalls []string
+		// failOn names the operation that should return an error, if any.
+		failOn  string
+		wantErr bool
 	}{
 		{
-			name:        "No changes needed",
-			resourceARN: "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent",
+			name: "No changes needed",
 			desiredTags: map[string]*string{
 				"key1": stringPtr("value1"),
 				"key2": stringPtr("value2"),
@@ -154,30 +160,34 @@ func TestSyncResourceTags(t *testing.T) {
 				"key1": stringPtr("value1"),
 				"key2": stringPtr("value2"),
 			},
-			mockClient: func() tagsClient {
-				return &mockTagsClient{
-					tagResourceFunc: func(ctx context.Context, input *svcsdk.TagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.TagResourceOutput, error) {
-						t.Error("TagResource should not be called")
-						return nil, nil
-					},
-					untagResourceFunc: func(ctx context.Context, input *svcsdk.UntagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.UntagResourceOutput, error) {
-						t.Error("UntagResource should not be called")
-						return nil, nil
-					},
-				}
-			},
-			mockMetrics: func() metricsRecorder {
-				return &mockMetricsRecorder{
-					recordAPICallFunc: func(opType string, opID string, err error) {
-						// No API calls should be recorded
-					},
-				}
-			},
-			wantErr: false,
+			wantCalls: nil,
 		},
 		{
-			name:        "Add and update tags",
-			resourceARN: "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent",
+			name: "Add new tag only",
+			desiredTags: map[string]*string{
+				"new": stringPtr("v"),
+			},
+			latestTags: map[string]*string{},
+			wantTagged: map[string]string{
+				"new": "v",
+			},
+			wantCalls: []string{"TagResource"},
+		},
+		{
+			name: "Value change only calls TagResource not UntagResource",
+			desiredTags: map[string]*string{
+				"key1": stringPtr("new-value1"),
+			},
+			latestTags: map[string]*string{
+				"key1": stringPtr("old-value1"),
+			},
+			wantTagged: map[string]string{
+				"key1": "new-value1",
+			},
+			wantCalls: []string{"TagResource"},
+		},
+		{
+			name: "Add and update tags",
 			desiredTags: map[string]*string{
 				"key1": stringPtr("new-value1"),
 				"key3": stringPtr("value3"),
@@ -186,312 +196,164 @@ func TestSyncResourceTags(t *testing.T) {
 				"key1": stringPtr("value1"),
 				"key2": stringPtr("value2"),
 			},
-			mockClient: func() tagsClient {
-				return &mockTagsClient{
-					tagResourceFunc: func(ctx context.Context, input *svcsdk.TagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.TagResourceOutput, error) {
-						if *input.ResourceArn != "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent" {
-							t.Errorf("Expected ResourceArn %s, got %s", "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent", *input.ResourceArn)
-						}
-						if len(input.Tags) != 2 {
-							t.Errorf("Expected 2 tags, got %d", len(input.Tags))
-						}
-						if input.Tags["key1"] != "new-value1" {
-							t.Errorf("Expected key1=new-value1, got key1=%s", input.Tags["key1"])
-						}
-						if input.Tags["key3"] != "value3" {
-							t.Errorf("Expected key3=value3, got key3=%s", input.Tags["key3"])
-						}
-						return &svcsdk.TagResourceOutput{}, nil
-					},
-					untagResourceFunc: func(ctx context.Context, input *svcsdk.UntagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.UntagResourceOutput, error) {
-						if *input.ResourceArn != "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent" {
-							t.Errorf("Expected ResourceArn %s, got %s", "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent", *input.ResourceArn)
-						}
-						if len(input.TagKeys) != 1 {
-							t.Errorf("Expected 1 tag key, got %d", len(input.TagKeys))
-						}
-						if input.TagKeys[0] != "key2" {
-							t.Errorf("Expected key2 to be removed, got %s", input.TagKeys[0])
-						}
-						return &svcsdk.UntagResourceOutput{}, nil
-					},
-				}
+			wantTagged: map[string]string{
+				"key1": "new-value1",
+				"key3": "value3",
 			},
-			mockMetrics: func() metricsRecorder {
-				callCount := 0
-				return &mockMetricsRecorder{
-					recordAPICallFunc: func(opType string, opID string, err error) {
-						callCount++
-						if callCount == 1 {
-							if opType != "UPDATE" || opID != "UntagResource" || err != nil {
-								t.Errorf("Expected RecordAPICall(UPDATE, UntagResource, nil), got RecordAPICall(%s, %s, %v)", opType, opID, err)
-							}
-						} else if callCount == 2 {
-							if opType != "UPDATE" || opID != "TagResource" || err != nil {
-								t.Errorf("Expected RecordAPICall(UPDATE, TagResource, nil), got RecordAPICall(%s, %s, %v)", opType, opID, err)
-							}
-						}
-					},
-				}
-			},
-			wantErr: false,
+			wantUntagged: []string{"key2"},
+			wantCalls:    []string{"UntagResource", "TagResource"},
 		},
 		{
-			name:        "Error in UntagResource",
-			resourceARN: "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent",
+			name: "Remove multiple tags with sorted keys",
+			desiredTags: map[string]*string{
+				"keep": stringPtr("value"),
+			},
+			latestTags: map[string]*string{
+				"keep": stringPtr("value"),
+				"c":    stringPtr("v"),
+				"a":    stringPtr("v"),
+				"b":    stringPtr("v"),
+			},
+			wantUntagged: []string{"a", "b", "c"},
+			wantCalls:    []string{"UntagResource"},
+		},
+		{
+			name: "Nil desired value is sent as empty string without panicking",
+			desiredTags: map[string]*string{
+				"key1": nil,
+			},
+			latestTags: map[string]*string{
+				"key1": stringPtr("value1"),
+			},
+			wantTagged: map[string]string{
+				"key1": "",
+			},
+			wantCalls: []string{"TagResource"},
+		},
+		{
+			name: "Nil values on both sides produce no API calls",
+			desiredTags: map[string]*string{
+				"key1": nil,
+			},
+			latestTags: map[string]*string{
+				"key1": nil,
+			},
+			wantCalls: nil,
+		},
+		{
+			name:        "Both empty produce no API calls",
+			desiredTags: map[string]*string{},
+			latestTags:  map[string]*string{},
+			wantCalls:   nil,
+		},
+		{
+			name: "Error in UntagResource aborts pending TagResource",
 			desiredTags: map[string]*string{
 				"key1": stringPtr("value1"),
+				"key3": stringPtr("value3"),
 			},
 			latestTags: map[string]*string{
 				"key1": stringPtr("value1"),
 				"key2": stringPtr("value2"),
 			},
-			mockClient: func() tagsClient {
-				return &mockTagsClient{
-					untagResourceFunc: func(ctx context.Context, input *svcsdk.UntagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.UntagResourceOutput, error) {
-						return nil, errors.New("API error")
-					},
-				}
-			},
-			mockMetrics: func() metricsRecorder {
-				return &mockMetricsRecorder{
-					recordAPICallFunc: func(opType string, opID string, err error) {
-						if opType != "UPDATE" || opID != "UntagResource" || err == nil {
-							t.Errorf("Expected RecordAPICall(UPDATE, UntagResource, error), got RecordAPICall(%s, %s, %v)", opType, opID, err)
-						}
-					},
-				}
-			},
-			wantErr: true,
+			wantUntagged: []string{"key2"},
+			wantCalls:    []string{"UntagResource"},
+			failOn:       "UntagResource",
+			wantErr:      true,
 		},
 		{
-			name:        "Error in TagResource",
-			resourceARN: "arn:aws:bedrock:us-west-2:123456789012:agent/test-agent",
+			name: "Error in TagResource",
 			desiredTags: map[string]*string{
 				"key1": stringPtr("new-value1"),
 			},
 			latestTags: map[string]*string{
 				"key1": stringPtr("value1"),
 			},
-			mockClient: func() tagsClient {
-				return &mockTagsClient{
-					tagResourceFunc: func(ctx context.Context, input *svcsdk.TagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.TagResourceOutput, error) {
-						return nil, errors.New("API error")
-					},
-				}
+			wantTagged: map[string]string{
+				"key1": "new-value1",
 			},
-			mockMetrics: func() metricsRecorder {
-				return &mockMetricsRecorder{
-					recordAPICallFunc: func(opType string, opID string, err error) {
-						if opType != "UPDATE" || opID != "TagResource" || err == nil {
-							t.Errorf("Expected RecordAPICall(UPDATE, TagResource, error), got RecordAPICall(%s, %s, %v)", opType, opID, err)
-						}
-					},
-				}
-			},
-			wantErr: true,
+			wantCalls: []string{"TagResource"},
+			failOn:    "TagResource",
+			wantErr:   true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := tt.mockClient()
-			mr := tt.mockMetrics()
-			err := SyncResourceTags(context.Background(), client, mr, tt.resourceARN, tt.desiredTags, tt.latestTags)
+			var gotTagInput *svcsdk.TagResourceInput
+			var gotUntagInput *svcsdk.UntagResourceInput
+			var gotCalls []string
+			var gotMetricOps []string
+
+			client := &mockTagsClient{
+				tagResourceFunc: func(ctx context.Context, input *svcsdk.TagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.TagResourceOutput, error) {
+					gotCalls = append(gotCalls, "TagResource")
+					gotTagInput = input
+					if tt.failOn == "TagResource" {
+						return nil, errors.New("API error")
+					}
+					return &svcsdk.TagResourceOutput{}, nil
+				},
+				untagResourceFunc: func(ctx context.Context, input *svcsdk.UntagResourceInput, opts ...func(*svcsdk.Options)) (*svcsdk.UntagResourceOutput, error) {
+					gotCalls = append(gotCalls, "UntagResource")
+					gotUntagInput = input
+					if tt.failOn == "UntagResource" {
+						return nil, errors.New("API error")
+					}
+					return &svcsdk.UntagResourceOutput{}, nil
+				},
+			}
+			mr := &mockMetricsRecorder{
+				recordAPICallFunc: func(opType string, opID string, err error) {
+					gotMetricOps = append(gotMetricOps, opID)
+					if opType != "UPDATE" {
+						t.Errorf("Expected opType UPDATE, got %s", opType)
+					}
+					if (err != nil) != (opID == tt.failOn) {
+						t.Errorf("RecordAPICall(%s) error = %v, failOn = %q", opID, err, tt.failOn)
+					}
+				},
+			}
+
+			err := SyncResourceTags(context.Background(), client, mr, resourceARN, tt.desiredTags, tt.latestTags)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("SyncResourceTags() error = %v, wantErr %v", err, tt.wantErr)
 			}
-		})
-	}
-}
-
-func TestComputeTagsDelta(t *testing.T) {
-	tests := []struct {
-		name            string
-		a               map[string]*string
-		b               map[string]*string
-		wantAddOrUpdate map[string]string
-		wantRemoved     []string
-	}{
-		{
-			name: "No changes",
-			a: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			wantAddOrUpdate: nil,
-			wantRemoved:     nil,
-		},
-		{
-			name: "Add new tags",
-			a: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-				"key3": stringPtr("value3"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-			},
-			wantAddOrUpdate: map[string]string{
-				"key2": "value2",
-				"key3": "value3",
-			},
-			wantRemoved: nil,
-		},
-		{
-			name: "Remove tags",
-			a: map[string]*string{
-				"key1": stringPtr("value1"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-				"key3": stringPtr("value3"),
-			},
-			wantAddOrUpdate: nil,
-			wantRemoved:     []string{"key2", "key3"},
-		},
-		{
-			name: "Update existing tags",
-			a: map[string]*string{
-				"key1": stringPtr("new-value1"),
-				"key2": stringPtr("value2"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			wantAddOrUpdate: map[string]string{
-				"key1": "new-value1",
-			},
-			wantRemoved: nil,
-		},
-		{
-			name: "Add, update, and remove tags",
-			a: map[string]*string{
-				"key1": stringPtr("new-value1"),
-				"key3": stringPtr("value3"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			wantAddOrUpdate: map[string]string{
-				"key1": "new-value1",
-				"key3": "value3",
-			},
-			wantRemoved: []string{"key2"},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			gotAddOrUpdate, gotRemoved := computeTagsDelta(tt.a, tt.b)
-
-			// Check added or updated tags
-			if !reflect.DeepEqual(gotAddOrUpdate, tt.wantAddOrUpdate) {
-				t.Errorf("computeTagsDelta() addedOrUpdated = %v, want %v", gotAddOrUpdate, tt.wantAddOrUpdate)
+			if !reflect.DeepEqual(gotCalls, tt.wantCalls) {
+				t.Errorf("API calls = %v, want %v", gotCalls, tt.wantCalls)
+			}
+			if !reflect.DeepEqual(gotMetricOps, tt.wantCalls) {
+				t.Errorf("RecordAPICall ops = %v, want %v", gotMetricOps, tt.wantCalls)
 			}
 
-			// For removed tags, we need to check if all expected keys are present
-			// regardless of order
-			if len(gotRemoved) != len(tt.wantRemoved) {
-				t.Errorf("computeTagsDelta() removed length = %d, want %d", len(gotRemoved), len(tt.wantRemoved))
+			if tt.wantTagged == nil {
+				if gotTagInput != nil {
+					t.Errorf("TagResource should not be called, got %v", gotTagInput.Tags)
+				}
+			} else if gotTagInput == nil {
+				t.Errorf("TagResource was not called, want tags %v", tt.wantTagged)
 			} else {
-				removedMap := make(map[string]bool)
-				for _, key := range gotRemoved {
-					removedMap[key] = true
+				if *gotTagInput.ResourceArn != resourceARN {
+					t.Errorf("Expected ResourceArn %s, got %s", resourceARN, *gotTagInput.ResourceArn)
 				}
-
-				for _, key := range tt.wantRemoved {
-					if !removedMap[key] {
-						t.Errorf("computeTagsDelta() removed does not contain key %s", key)
-					}
+				if !reflect.DeepEqual(gotTagInput.Tags, tt.wantTagged) {
+					t.Errorf("TagResource tags = %v, want %v", gotTagInput.Tags, tt.wantTagged)
 				}
 			}
-		})
-	}
-}
 
-func TestEqualTags(t *testing.T) {
-	tests := []struct {
-		name string
-		a    map[string]*string
-		b    map[string]*string
-		want bool
-	}{
-		{
-			name: "Equal tags",
-			a: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			want: true,
-		},
-		{
-			name: "Different values",
-			a: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("different"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			want: false,
-		},
-		{
-			name: "Different keys",
-			a: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key3": stringPtr("value3"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			want: false,
-		},
-		{
-			name: "Different number of tags",
-			a: map[string]*string{
-				"key1": stringPtr("value1"),
-			},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-				"key2": stringPtr("value2"),
-			},
-			want: false,
-		},
-		{
-			name: "Both empty",
-			a:    map[string]*string{},
-			b:    map[string]*string{},
-			want: true,
-		},
-		{
-			name: "One empty, one not",
-			a:    map[string]*string{},
-			b: map[string]*string{
-				"key1": stringPtr("value1"),
-			},
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := EqualTags(tt.a, tt.b)
-			if got != tt.want {
-				t.Errorf("EqualTags() = %v, want %v", got, tt.want)
+			if tt.wantUntagged == nil {
+				if gotUntagInput != nil {
+					t.Errorf("UntagResource should not be called, got %v", gotUntagInput.TagKeys)
+				}
+			} else if gotUntagInput == nil {
+				t.Errorf("UntagResource was not called, want keys %v", tt.wantUntagged)
+			} else {
+				if *gotUntagInput.ResourceArn != resourceARN {
+					t.Errorf("Expected ResourceArn %s, got %s", resourceARN, *gotUntagInput.ResourceArn)
+				}
+				if !reflect.DeepEqual(gotUntagInput.TagKeys, tt.wantUntagged) {
+					t.Errorf("UntagResource keys = %v, want %v", gotUntagInput.TagKeys, tt.wantUntagged)
+				}
 			}
 		})
 	}

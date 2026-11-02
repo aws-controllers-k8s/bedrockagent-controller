@@ -15,8 +15,12 @@ package tags
 
 import (
 	"context"
+	"maps"
+	"slices"
 
+	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
+	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
 	svcsdk "github.com/aws/aws-sdk-go-v2/service/bedrockagent"
 )
 
@@ -73,14 +77,20 @@ func SyncResourceTags(
 		exit(err)
 	}()
 
-	addedOrUpdated, removed := computeTagsDelta(desiredTags, latestTags)
+	from := toACKTags(latestTags)
+	to := toACKTags(desiredTags)
+	added, _, removed := ackcompare.GetTagsDifference(from, to)
+
+	if len(added) == 0 && len(removed) == 0 {
+		return nil
+	}
 
 	if len(removed) > 0 {
 		_, err = client.UntagResource(
 			ctx,
 			&svcsdk.UntagResourceInput{
 				ResourceArn: &resourceARN,
-				TagKeys:     removed,
+				TagKeys:     slices.Sorted(maps.Keys(removed)),
 			},
 		)
 		mr.RecordAPICall("UPDATE", "UntagResource", err)
@@ -89,12 +99,12 @@ func SyncResourceTags(
 		}
 	}
 
-	if len(addedOrUpdated) > 0 {
+	if len(added) > 0 {
 		_, err = client.TagResource(
 			ctx,
 			&svcsdk.TagResourceInput{
 				ResourceArn: &resourceARN,
-				Tags:        addedOrUpdated,
+				Tags:        added,
 			},
 		)
 		mr.RecordAPICall("UPDATE", "TagResource", err)
@@ -105,39 +115,16 @@ func SyncResourceTags(
 	return nil
 }
 
-// computeTagsDelta compares two Tag arrays and return two different list
-// containing the addedOrupdated and removed tags. The removed tags array
-// only contains the tags Keys.
-func computeTagsDelta(
-	a map[string]*string,
-	b map[string]*string,
-) (addedOrUpdated map[string]string, removed []string) {
-
-	// Find the keys in the Spec have either been added or updated.
-	for key, value := range a {
-		if bValue, exists := b[key]; !exists || *value != *bValue {
-			if addedOrUpdated == nil {
-				addedOrUpdated = make(map[string]string)
-			}
-			addedOrUpdated[key] = *value
+// toACKTags converts map-based tags into acktags.Tags, treating nil values as
+// empty strings.
+func toACKTags(tags map[string]*string) acktags.Tags {
+	m := make(acktags.Tags)
+	for k, v := range tags {
+		val := ""
+		if v != nil {
+			val = *v
 		}
+		m[k] = val
 	}
-
-	for key := range b {
-		if _, exists := a[key]; !exists {
-			removed = append(removed, key)
-		}
-	}
-
-	return addedOrUpdated, removed
-}
-
-// equalTags returns true if two Tag arrays are equal regardless of the order
-// of their elements.
-func EqualTags(
-	a map[string]*string,
-	b map[string]*string,
-) bool {
-	addedOrUpdated, removed := computeTagsDelta(a, b)
-	return len(addedOrUpdated) == 0 && len(removed) == 0
+	return m
 }
